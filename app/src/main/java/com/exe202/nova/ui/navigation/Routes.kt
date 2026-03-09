@@ -44,3 +44,37 @@ object ProfileRoute
 
 @Serializable
 object SettingsRoute
+
+// Manager nested routes
+@Serializable
+object ManagerDashboardRoute
+
+@Serializable
+object ManagerBookingsRoute
+
+@Serializable
+object ManagerBillingRoute
+
+@Serializable
+object ManagerCustomersRoute
+
+@Serializable
+data class ManagerCustomerDetailRoute(val customerId: String)
+
+@Serializable
+object ManagerMoreRoute
+
+@Serializable
+object ManagerApartmentsRoute
+
+@Serializable
+object ManagerFacilitiesRoute
+
+@Serializable
+object ManagerAnnouncementsRoute
+
+@Serializable
+object ManagerCreateAnnouncementRoute
+
+@Serializable
+object ManagerReportsRoute

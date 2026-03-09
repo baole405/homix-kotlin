@@ -12,10 +12,22 @@ private val LightColorScheme = lightColorScheme(
     surface = NovaSurface
 )
 
+private val ManagerColorScheme = lightColorScheme(
+    primary = ManagerPrimary,
+    onPrimary = ManagerOnPrimary,
+    secondary = ManagerSecondary,
+    background = ManagerBackground,
+    surface = ManagerSurface
+)
+
 @Composable
-fun NovaTheme(content: @Composable () -> Unit) {
+fun NovaTheme(
+    isManager: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (isManager) ManagerColorScheme else LightColorScheme
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colorScheme = colorScheme,
         typography = NovaTypography,
         content = content
     )

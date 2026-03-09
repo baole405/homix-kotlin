@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.exe202.nova.data.model.ApartmentStatus
 import com.exe202.nova.data.model.BillStatus
 import com.exe202.nova.data.model.BookingStatus
 import com.exe202.nova.ui.theme.StatusCancelled
@@ -54,6 +55,16 @@ fun BookingStatusChip(status: BookingStatus, modifier: Modifier = Modifier) {
         BookingStatus.CONFIRMED -> "Da xac nhan" to StatusConfirmed
         BookingStatus.REJECTED -> "Bi tu choi" to StatusRejected
         BookingStatus.CANCELLED -> "Da huy" to StatusCancelled
+    }
+    StatusChip(text = text, color = color, modifier = modifier)
+}
+
+@Composable
+fun ApartmentStatusChip(status: ApartmentStatus, modifier: Modifier = Modifier) {
+    val (text, color) = when (status) {
+        ApartmentStatus.OCCUPIED -> "Có người ở" to StatusConfirmed
+        ApartmentStatus.VACANT -> "Trống" to StatusPending
+        ApartmentStatus.MAINTENANCE -> "Bảo trì" to StatusOverdue
     }
     StatusChip(text = text, color = color, modifier = modifier)
 }

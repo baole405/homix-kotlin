@@ -26,3 +26,11 @@ val UrgencyLow = Color(0xFF66BB6A)
 // Background
 val NovaBackground = Color(0xFFF5F5F5)
 val NovaSurface = Color.White
+
+// Manager theme
+val ManagerPrimary = Color(0xFF1B5E20)        // Dark green
+val ManagerPrimaryVariant = Color(0xFF2E7D32)
+val ManagerOnPrimary = Color.White
+val ManagerSecondary = Color(0xFF00695C)       // Teal
+val ManagerBackground = Color(0xFFF1F8E9)      // Light green tint
+val ManagerSurface = Color.White
