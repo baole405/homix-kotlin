@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.exe202.nova.ui.screen.auth.LoginScreen
 import com.exe202.nova.ui.screen.auth.RegisterScreen
 import com.exe202.nova.ui.screen.auth.SplashScreen
+import com.exe202.nova.ui.screen.manager.ManagerMainScreen
 import com.exe202.nova.ui.screen.resident.ResidentMainScreen
 
 @Composable
@@ -72,8 +73,7 @@ fun NovaNavHost() {
         }
 
         composable<ManagerMainRoute> {
-            // Placeholder for P2
-            ResidentMainScreen(onLogout = {
+            ManagerMainScreen(onLogout = {
                 navController.navigate(LoginRoute) {
                     popUpTo(ManagerMainRoute) { inclusive = true }
                 }

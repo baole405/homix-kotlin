@@ -45,3 +45,32 @@ enum class SlotStatus {
     @SerializedName("occupied") OCCUPIED,
     @SerializedName("maintenance") MAINTENANCE
 }
+
+enum class FeeType {
+    @SerializedName("electricity") ELECTRICITY,
+    @SerializedName("water") WATER,
+    @SerializedName("parking") PARKING,
+    @SerializedName("management") MANAGEMENT,
+    @SerializedName("internet") INTERNET,
+    @SerializedName("service") SERVICE
+}
+
+enum class ApartmentStatus {
+    @SerializedName("occupied") OCCUPIED,
+    @SerializedName("vacant") VACANT,
+    @SerializedName("maintenance") MAINTENANCE
+}
+
+enum class AnnouncementCategory {
+    @SerializedName("maintenance") MAINTENANCE,
+    @SerializedName("event") EVENT,
+    @SerializedName("policy") POLICY,
+    @SerializedName("emergency") EMERGENCY,
+    @SerializedName("general") GENERAL
+}
+
+enum class AnnouncementPriority {
+    @SerializedName("normal") NORMAL,
+    @SerializedName("important") IMPORTANT,
+    @SerializedName("urgent") URGENT
+}
