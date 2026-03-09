@@ -54,9 +54,8 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                authRepository.login(state.usernameOrEmail, state.password)
-                val user = authRepository.getMe()
-                _uiState.update { it.copy(isLoading = false, loginSuccess = user.role) }
+                val response = authRepository.login(state.usernameOrEmail, state.password)
+                _uiState.update { it.copy(isLoading = false, loginSuccess = response.user.role) }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

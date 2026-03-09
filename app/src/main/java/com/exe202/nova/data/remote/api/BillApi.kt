@@ -6,6 +6,7 @@ import com.exe202.nova.data.model.CreatePaymentLinkRequest
 import com.exe202.nova.data.model.CreatePaymentLinkResponse
 import com.exe202.nova.data.model.MarkPaidRequest
 import com.exe202.nova.data.model.MarkPaidResponse
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
@@ -19,20 +20,20 @@ interface BillApi {
         @Query("status") status: String = "all",
         @Query("sortBy") sortBy: String = "dueDate",
         @Query("sortOrder") sortOrder: String = "asc"
-    ): BillsResponse
+    ): Response<BillsResponse>
 
     @GET("bills/upcoming")
-    suspend fun getUpcomingBills(): BillsResponse
+    suspend fun getUpcomingBills(): Response<BillsResponse>
 
     @GET("bills/{id}")
-    suspend fun getBillDetail(@Path("id") id: Int): BillDetail
+    suspend fun getBillDetail(@Path("id") id: Int): Response<BillDetail>
 
     @PATCH("bills/{id}/mark-paid")
     suspend fun markPaid(
         @Path("id") id: Int,
         @Body request: MarkPaidRequest
-    ): MarkPaidResponse
+    ): Response<MarkPaidResponse>
 
     @POST("payments/create-link")
-    suspend fun createPaymentLink(@Body request: CreatePaymentLinkRequest): CreatePaymentLinkResponse
+    suspend fun createPaymentLink(@Body request: CreatePaymentLinkRequest): Response<CreatePaymentLinkResponse>
 }

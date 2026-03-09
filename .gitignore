@@ -34,3 +34,5 @@ desktop.ini
 
 # Claude
 .claude/
+.idea/misc.xml
+.idea/gradle.xml

@@ -1,3 +1,16 @@
+// Load .env file from project root
+val envFile = rootProject.file(".env")
+val envVars = mutableMapOf<String, String>()
+if (envFile.exists()) {
+    envFile.readLines().forEach { line ->
+        val trimmed = line.trim()
+        if (trimmed.isNotEmpty() && !trimmed.startsWith("#") && trimmed.contains("=")) {
+            val (key, value) = trimmed.split("=", limit = 2)
+            envVars[key.trim()] = value.trim()
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -20,7 +33,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:4000/api/\"")
+        // Use local server via emulator loopback; .env URL is for production/web
+        val apiUrl = envVars["LOCAL_API_URL"] ?: "http://10.0.2.2:4000/api"
+        buildConfigField("String", "API_BASE_URL", "\"${apiUrl}/\"")
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${envVars["GOOGLE_CLIENT_ID"] ?: ""}\"")
+        buildConfigField("String", "AUTH_BASE_URL", "\"${envVars["NEXT_PUBLIC_BETTER_AUTH_URL"] ?: "http://10.0.2.2:5000"}\"")
     }
 
     buildTypes {
