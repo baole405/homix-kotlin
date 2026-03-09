@@ -17,8 +17,12 @@ class AuthRepository @Inject constructor(
 ) {
     suspend fun login(usernameOrEmail: String, password: String): LoginResponse {
         val response = authApi.login(LoginRequest(usernameOrEmail, password))
-        tokenManager.saveToken(response.accessToken)
-        return response
+        if (!response.isSuccessful) {
+            throw Exception("Login failed: ${response.code()}")
+        }
+        val body = response.body() ?: throw Exception("Empty response")
+        tokenManager.saveToken(body.accessToken)
+        return body
     }
 
     suspend fun register(
@@ -31,11 +35,21 @@ class AuthRepository @Inject constructor(
         val response = authApi.register(
             RegisterRequest(username, email, password, fullName, phoneNumber)
         )
-        tokenManager.saveToken(response.accessToken)
-        return response
+        if (!response.isSuccessful) {
+            throw Exception("Register failed: ${response.code()}")
+        }
+        val body = response.body() ?: throw Exception("Empty response")
+        tokenManager.saveToken(body.accessToken)
+        return body
     }
 
-    suspend fun getMe(): User = authApi.getMe()
+    suspend fun getMe(): User {
+        val response = authApi.getMe()
+        if (!response.isSuccessful) {
+            throw Exception("Get user failed: ${response.code()}")
+        }
+        return response.body() ?: throw Exception("Empty response")
+    }
 
     fun getToken(): String? = tokenManager.getToken()
 

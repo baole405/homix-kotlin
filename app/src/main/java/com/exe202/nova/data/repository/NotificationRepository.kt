@@ -9,8 +9,18 @@ import javax.inject.Singleton
 class NotificationRepository @Inject constructor(
     private val notificationApi: NotificationApi
 ) {
-    suspend fun getNotifications(): List<Notification> =
-        notificationApi.getNotifications().data
+    suspend fun getNotifications(): List<Notification> {
+        val response = notificationApi.getNotifications()
+        if (!response.isSuccessful) {
+            throw Exception("Get notifications failed: ${response.code()}")
+        }
+        return response.body()?.data ?: emptyList()
+    }
 
-    suspend fun markAsRead(id: Int) = notificationApi.markAsRead(id)
+    suspend fun markAsRead(id: Int) {
+        val response = notificationApi.markAsRead(id)
+        if (!response.isSuccessful) {
+            throw Exception("Mark as read failed: ${response.code()}")
+        }
+    }
 }

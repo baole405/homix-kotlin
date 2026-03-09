@@ -10,11 +10,21 @@ import javax.inject.Singleton
 class BookingRepository @Inject constructor(
     private val bookingApi: BookingApi
 ) {
-    suspend fun getMyBookings(): List<Booking> = bookingApi.getMyBookings()
+    suspend fun getMyBookings(): List<Booking> {
+        val response = bookingApi.getMyBookings()
+        if (!response.isSuccessful) throw Exception("Get bookings failed: ${response.code()}")
+        return response.body() ?: emptyList()
+    }
 
-    suspend fun getBookingsByDate(date: String, serviceType: String): List<Booking> =
-        bookingApi.getBookingsByDate(date, serviceType)
+    suspend fun getBookingsByDate(date: String, serviceType: String): List<Booking> {
+        val response = bookingApi.getBookingsByDate(date, serviceType)
+        if (!response.isSuccessful) throw Exception("Get bookings by date failed: ${response.code()}")
+        return response.body() ?: emptyList()
+    }
 
-    suspend fun createBooking(request: CreateBookingRequest): Booking =
-        bookingApi.createBooking(request)
+    suspend fun createBooking(request: CreateBookingRequest): Booking {
+        val response = bookingApi.createBooking(request)
+        if (!response.isSuccessful) throw Exception("Create booking failed: ${response.code()}")
+        return response.body() ?: throw Exception("Empty response")
+    }
 }

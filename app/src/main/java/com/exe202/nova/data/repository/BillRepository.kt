@@ -14,15 +14,33 @@ import javax.inject.Singleton
 class BillRepository @Inject constructor(
     private val billApi: BillApi
 ) {
-    suspend fun getBills(): List<Bill> = billApi.getBills().data
+    suspend fun getBills(): List<Bill> {
+        val response = billApi.getBills()
+        if (!response.isSuccessful) throw Exception("Get bills failed: ${response.code()}")
+        return response.body()?.data ?: emptyList()
+    }
 
-    suspend fun getUpcomingBills(): List<Bill> = billApi.getUpcomingBills().data
+    suspend fun getUpcomingBills(): List<Bill> {
+        val response = billApi.getUpcomingBills()
+        if (!response.isSuccessful) throw Exception("Get upcoming bills failed: ${response.code()}")
+        return response.body()?.data ?: emptyList()
+    }
 
-    suspend fun getBillDetail(id: Int): BillDetail = billApi.getBillDetail(id)
+    suspend fun getBillDetail(id: Int): BillDetail {
+        val response = billApi.getBillDetail(id)
+        if (!response.isSuccessful) throw Exception("Get bill detail failed: ${response.code()}")
+        return response.body() ?: throw Exception("Empty response")
+    }
 
-    suspend fun markPaid(id: Int, request: MarkPaidRequest): MarkPaidResponse =
-        billApi.markPaid(id, request)
+    suspend fun markPaid(id: Int, request: MarkPaidRequest): MarkPaidResponse {
+        val response = billApi.markPaid(id, request)
+        if (!response.isSuccessful) throw Exception("Mark paid failed: ${response.code()}")
+        return response.body() ?: throw Exception("Empty response")
+    }
 
-    suspend fun createPaymentLink(request: CreatePaymentLinkRequest): CreatePaymentLinkResponse =
-        billApi.createPaymentLink(request)
+    suspend fun createPaymentLink(request: CreatePaymentLinkRequest): CreatePaymentLinkResponse {
+        val response = billApi.createPaymentLink(request)
+        if (!response.isSuccessful) throw Exception("Create payment link failed: ${response.code()}")
+        return response.body() ?: throw Exception("Empty response")
+    }
 }

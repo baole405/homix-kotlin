@@ -9,5 +9,9 @@ import javax.inject.Singleton
 class TransactionRepository @Inject constructor(
     private val transactionApi: TransactionApi
 ) {
-    suspend fun getTransactions(): List<Transaction> = transactionApi.getTransactions()
+    suspend fun getTransactions(): List<Transaction> {
+        val response = transactionApi.getTransactions()
+        if (!response.isSuccessful) throw Exception("Get transactions failed: ${response.code()}")
+        return response.body() ?: emptyList()
+    }
 }

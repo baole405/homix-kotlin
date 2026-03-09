@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 data class DashboardUiState(
@@ -43,17 +44,19 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val userDeferred = async { authRepository.getMe() }
-                val billsDeferred = async { billRepository.getUpcomingBills() }
-                val notificationsDeferred = async { notificationRepository.getNotifications() }
+                supervisorScope {
+                    val userDeferred = async { runCatching { authRepository.getMe() } }
+                    val billsDeferred = async { runCatching { billRepository.getUpcomingBills() } }
+                    val notificationsDeferred = async { runCatching { notificationRepository.getNotifications() } }
 
-                _uiState.update {
-                    it.copy(
-                        user = userDeferred.await(),
-                        upcomingBills = billsDeferred.await().take(3),
-                        recentNotifications = notificationsDeferred.await().take(3),
-                        isLoading = false
-                    )
+                    _uiState.update {
+                        it.copy(
+                            user = userDeferred.await().getOrNull(),
+                            upcomingBills = billsDeferred.await().getOrDefault(emptyList()).take(3),
+                            recentNotifications = notificationsDeferred.await().getOrDefault(emptyList()).take(3),
+                            isLoading = false
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.message ?: "Loi tai du lieu") }
@@ -65,18 +68,20 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
             try {
-                val userDeferred = async { authRepository.getMe() }
-                val billsDeferred = async { billRepository.getUpcomingBills() }
-                val notificationsDeferred = async { notificationRepository.getNotifications() }
+                supervisorScope {
+                    val userDeferred = async { runCatching { authRepository.getMe() } }
+                    val billsDeferred = async { runCatching { billRepository.getUpcomingBills() } }
+                    val notificationsDeferred = async { runCatching { notificationRepository.getNotifications() } }
 
-                _uiState.update {
-                    it.copy(
-                        user = userDeferred.await(),
-                        upcomingBills = billsDeferred.await().take(3),
-                        recentNotifications = notificationsDeferred.await().take(3),
-                        isRefreshing = false,
-                        error = null
-                    )
+                    _uiState.update {
+                        it.copy(
+                            user = userDeferred.await().getOrNull(),
+                            upcomingBills = billsDeferred.await().getOrDefault(emptyList()).take(3),
+                            recentNotifications = notificationsDeferred.await().getOrDefault(emptyList()).take(3),
+                            isRefreshing = false,
+                            error = null
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isRefreshing = false, error = e.message) }

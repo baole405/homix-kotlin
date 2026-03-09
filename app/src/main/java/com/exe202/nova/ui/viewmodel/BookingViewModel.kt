@@ -131,8 +131,9 @@ class BookingViewModel @Inject constructor(
         val close = LocalTime.parse(pool.closeTime, timeFmt)
         val slots = mutableListOf<TimeSlot>()
         var current = open
-        while (current.plusHours(2) <= close) {
+        while (current.isBefore(close)) {
             val next = current.plusHours(2)
+            if (next.isAfter(close) || next.isBefore(current)) break
             val startStr = current.format(timeFmt)
             val endStr = next.format(timeFmt)
             val isBooked = bookedBookings.any { b -> b.startTime == startStr }
