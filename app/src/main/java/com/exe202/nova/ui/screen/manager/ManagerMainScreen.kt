@@ -38,6 +38,7 @@ import com.exe202.nova.ui.navigation.ManagerCustomerDetailRoute
 import com.exe202.nova.ui.navigation.ManagerCustomersRoute
 import com.exe202.nova.ui.navigation.ManagerDashboardRoute
 import com.exe202.nova.ui.navigation.ManagerFacilitiesRoute
+import com.exe202.nova.ui.navigation.ManagerFeeTypesRoute
 import com.exe202.nova.ui.navigation.ManagerReportsRoute
 import com.exe202.nova.ui.theme.ManagerAccent
 import kotlinx.coroutines.launch
@@ -62,6 +63,7 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
         currentDestination?.hasRoute(ManagerAnnouncementsRoute::class) == true -> "Thông báo BQL"
         currentDestination?.hasRoute(ManagerCreateAnnouncementRoute::class) == true -> "Tạo Thông báo"
         currentDestination?.hasRoute(ManagerReportsRoute::class) == true -> "Báo cáo"
+        currentDestination?.hasRoute(ManagerFeeTypesRoute::class) == true -> "Loại phí"
         else -> "Nova"
     }
 
@@ -78,7 +80,6 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
                 restoreState = true
             }
         },
-        onLogout = onLogout
     ) {
         Scaffold(
             topBar = {
@@ -147,6 +148,9 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
                 }
                 composable<ManagerReportsRoute> {
                     ManagerReportsScreen()
+                }
+                composable<ManagerFeeTypesRoute> {
+                    ManagerFeeTypesScreen()
                 }
             }
         }

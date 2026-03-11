@@ -1,11 +1,13 @@
 package com.exe202.nova.data.model
 
 data class Apartment(
-    val id: String,
+    val id: Int? = null,
     val unitNumber: String,
     val floor: Int,
     val block: String,
-    val area: Double
+    val area: Double,
+    val monthlyFee: Double? = null,
+    val status: String? = null
 )
 
 data class Vehicle(

@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.HistoryEdu
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.MeetingRoom
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Pool
@@ -58,6 +59,7 @@ import com.exe202.nova.ui.navigation.ManagerBookingsRoute
 import com.exe202.nova.ui.navigation.ManagerCustomersRoute
 import com.exe202.nova.ui.navigation.ManagerDashboardRoute
 import com.exe202.nova.ui.navigation.ManagerFacilitiesRoute
+import com.exe202.nova.ui.navigation.ManagerFeeTypesRoute
 import com.exe202.nova.ui.navigation.ManagerReportsRoute
 import com.exe202.nova.ui.navigation.NotificationsRoute
 import com.exe202.nova.ui.navigation.ProfileRoute
@@ -93,6 +95,7 @@ private val managerItems = listOf(
     null, // divider
     DrawerItem(ManagerApartmentsRoute, "Quản lý Căn hộ", Icons.Outlined.Apartment),
     DrawerItem(ManagerFacilitiesRoute, "Quản lý Tiện ích", Icons.Outlined.Pool),
+    DrawerItem(ManagerFeeTypesRoute, "Loại phí", Icons.Outlined.Payments),
     DrawerItem(ManagerAnnouncementsRoute, "Thông báo BQL", Icons.Outlined.Campaign),
     DrawerItem(ManagerReportsRoute, "Báo cáo", Icons.Outlined.Assessment),
     null, // divider
@@ -105,7 +108,6 @@ fun AppDrawer(
     drawerState: DrawerState,
     currentDestination: NavDestination?,
     onNavigateTo: (Any) -> Unit,
-    onLogout: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()

@@ -21,6 +21,7 @@ import com.exe202.nova.ui.component.StatCard
 import com.exe202.nova.ui.theme.StatusOverdue
 import com.exe202.nova.ui.theme.StatusPending
 import com.exe202.nova.ui.theme.StatusConfirmed
+import com.exe202.nova.data.model.DashboardStats
 import com.exe202.nova.ui.viewmodel.ManagerDashboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,7 +68,7 @@ fun ManagerDashboardScreen(
 
             // Stats grid
             item {
-                val stats = uiState.stats
+                val stats = uiState.stats ?: DashboardStats(0, 0, 0, 0, 0, 0)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatCard(

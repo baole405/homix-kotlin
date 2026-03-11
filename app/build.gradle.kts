@@ -114,6 +114,9 @@ dependencies {
     // DataStore
     implementation(libs.datastore.preferences)
 
+    // Browser (Chrome Custom Tabs)
+    implementation(libs.browser)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -30,9 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import android.net.Uri
+import com.exe202.nova.BuildConfig
 import com.exe202.nova.data.model.AppRole
 import com.exe202.nova.ui.viewmodel.LoginViewModel
 
@@ -43,6 +47,7 @@ fun LoginScreen(
     onNavigateToManager: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(uiState.loginSuccess) {
@@ -126,7 +131,11 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedButton(
-                onClick = { /* Google OAuth - Phase 2 */ },
+                onClick = {
+                    val authUrl = "${BuildConfig.AUTH_BASE_URL}/api/auth/google"
+                    val intent = CustomTabsIntent.Builder().build()
+                    intent.launchUrl(context, Uri.parse(authUrl))
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Đăng nhập với Google")

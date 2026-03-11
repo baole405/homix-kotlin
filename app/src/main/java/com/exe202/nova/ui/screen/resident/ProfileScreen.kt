@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.exe202.nova.ui.component.ErrorScreen
+import com.exe202.nova.util.toVndFormat
 import com.exe202.nova.ui.component.LoadingScreen
 import com.exe202.nova.ui.viewmodel.ProfileViewModel
 
@@ -104,6 +105,19 @@ fun ProfileScreen(
             ProfileRow("Email", user.email)
             user.fullName?.let { ProfileRow("Họ tên", it) }
             user.phoneNumber?.let { ProfileRow("Số điện thoại", it) }
+        }
+
+        uiState.apartment?.let { apt ->
+            Spacer(modifier = Modifier.height(8.dp))
+            ProfileSection(title = "Thông tin căn hộ") {
+                ProfileRow("Số phòng", apt.unitNumber)
+                ProfileRow("Tầng", apt.floor.toString())
+                ProfileRow("Block", apt.block)
+                ProfileRow("Diện tích", "${apt.area} m²")
+                apt.monthlyFee?.let { fee ->
+                    ProfileRow("Phí hàng tháng", fee.toVndFormat())
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -43,11 +43,11 @@ fun String.toRelativeTime(): String = try {
     val hours = ChronoUnit.HOURS.between(dateTime, now)
     val days = ChronoUnit.DAYS.between(dateTime, now)
     when {
-        minutes < 1 -> "Vua xong"
-        minutes < 60 -> "$minutes phut truoc"
-        hours < 24 -> "$hours gio truoc"
-        days < 7 -> "$days ngay truoc"
-        days < 30 -> "${days / 7} tuan truoc"
+        minutes < 1 -> "Vừa xong"
+        minutes < 60 -> "$minutes phút trước"
+        hours < 24 -> "$hours giờ trước"
+        days < 7 -> "$days ngày trước"
+        days < 30 -> "${days / 7} tuần trước"
         else -> dateTime.format(displayDateFormatter)
     }
 } catch (e: Exception) {
