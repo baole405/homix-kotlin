@@ -63,12 +63,12 @@ fun NotificationsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Thong bao",
+                "Thông báo",
                 style = MaterialTheme.typography.titleLarge
             )
             if (uiState.unreadCount > 0) {
                 TextButton(onClick = viewModel::markAllRead) {
-                    Text("Danh dau tat ca da doc")
+                    Text("Đánh dấu tất cả đã đọc")
                 }
             }
         }
@@ -79,7 +79,7 @@ fun NotificationsScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             if (uiState.notifications.isEmpty()) {
-                EmptyState("Khong co thong bao")
+                EmptyState("Không có thông báo")
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(uiState.notifications, key = { it.id }) { notification ->

@@ -36,3 +36,8 @@ desktop.ini
 .claude/
 .idea/misc.xml
 .idea/gradle.xml
+
+# Temp / IDE
+.superpowers/
+.vscode/
+.kotlin/

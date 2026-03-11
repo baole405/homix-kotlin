@@ -1,5 +1,6 @@
 package com.exe202.nova.ui.screen.resident
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,6 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -100,10 +100,10 @@ fun ProfileScreen(
         }
 
         // Personal info
-        ProfileSection(title = "Thong tin ca nhan") {
+        ProfileSection(title = "Thông tin cá nhân") {
             ProfileRow("Email", user.email)
-            user.fullName?.let { ProfileRow("Ho ten", it) }
-            user.phoneNumber?.let { ProfileRow("So dien thoai", it) }
+            user.fullName?.let { ProfileRow("Họ tên", it) }
+            user.phoneNumber?.let { ProfileRow("Số điện thoại", it) }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -112,16 +112,17 @@ fun ProfileScreen(
             onClick = onLogout,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Dang xuat")
+            Text("Đăng xuất")
         }
     }
 }
 
 @Composable
 private fun ProfileSection(title: String, content: @Composable () -> Unit) {
-    ElevatedCard(
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium)

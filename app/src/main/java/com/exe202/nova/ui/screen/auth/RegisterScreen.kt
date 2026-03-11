@@ -48,14 +48,14 @@ fun RegisterScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Dang ky tai khoan", style = MaterialTheme.typography.headlineMedium)
+            Text("Đăng ký tài khoản", style = MaterialTheme.typography.headlineMedium)
 
             Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
                 value = uiState.fullName,
                 onValueChange = viewModel::onFullNameChange,
-                label = { Text("Ho va ten") },
+                label = { Text("Họ và tên") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -64,7 +64,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.username,
                 onValueChange = viewModel::onUsernameChange,
-                label = { Text("Ten dang nhap") },
+                label = { Text("Tên đăng nhập") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -82,7 +82,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.phoneNumber,
                 onValueChange = viewModel::onPhoneNumberChange,
-                label = { Text("So dien thoai") },
+                label = { Text("Số điện thoại") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -91,7 +91,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChange,
-                label = { Text("Mat khau") },
+                label = { Text("Mật khẩu") },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
@@ -101,7 +101,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = uiState.confirmPassword,
                 onValueChange = viewModel::onConfirmPasswordChange,
-                label = { Text("Nhap lai mat khau") },
+                label = { Text("Nhập lại mật khẩu") },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
@@ -119,13 +119,13 @@ fun RegisterScreen(
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Dang ky")
+                Text("Đăng ký")
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             TextButton(onClick = onNavigateToLogin) {
-                Text("Da co tai khoan? Dang nhap")
+                Text("Đã có tài khoản? Đăng nhập")
             }
         }
 

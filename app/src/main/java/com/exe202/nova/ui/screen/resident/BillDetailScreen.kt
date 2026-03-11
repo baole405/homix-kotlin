@@ -69,7 +69,7 @@ fun BillDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Chi tiet hoa don") },
+                title = { Text("Chi tiết hóa đơn") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -121,13 +121,13 @@ fun BillDetailScreen(
                 // Bill info
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     bill.apartment?.let { apt ->
-                        Text("Can ho: ${apt.unitNumber} - Tang ${apt.floor} - ${apt.block}", style = MaterialTheme.typography.bodyMedium)
+                        Text("Căn hộ: ${apt.unitNumber} - Tầng ${apt.floor} - ${apt.block}", style = MaterialTheme.typography.bodyMedium)
                     }
-                    Text("Ky: ${bill.period}", style = MaterialTheme.typography.bodyMedium)
-                    Text("Han thanh toan: ${bill.dueDate.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
-                    Text("Ngay tao: ${bill.createdAt.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
+                    Text("Kỳ: ${bill.period}", style = MaterialTheme.typography.bodyMedium)
+                    Text("Hạn thanh toán: ${bill.dueDate.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
+                    Text("Ngày tạo: ${bill.createdAt.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
                     bill.paidAt?.let {
-                        Text("Ngay thanh toan: ${it.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
+                        Text("Ngày thanh toán: ${it.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
@@ -135,7 +135,7 @@ fun BillDetailScreen(
             item {
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(4.dp))
-                Text("Chi tiet hoa don", style = MaterialTheme.typography.titleMedium)
+                Text("Chi tiết hóa đơn", style = MaterialTheme.typography.titleMedium)
             }
 
             items(bill.items) { item ->
@@ -145,8 +145,8 @@ fun BillDetailScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(item.title, style = MaterialTheme.typography.bodyMedium)
-                        item.usage?.let { Text("Su dung: $it ${item.measureUnit ?: ""}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-                        item.unitPrice?.let { Text("Don gia: $it", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                        item.usage?.let { Text("Sử dụng: $it ${item.measureUnit ?: ""}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                        item.unitPrice?.let { Text("Đơn giá: $it", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
                     }
                     Text(item.amount, style = MaterialTheme.typography.bodyMedium)
                 }
@@ -162,14 +162,14 @@ fun BillDetailScreen(
                         enabled = !uiState.isCreatingPaymentLink,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(if (uiState.isCreatingPaymentLink) "Dang xu ly..." else "Thanh toan online (VNPay)")
+                        Text(if (uiState.isCreatingPaymentLink) "Đang xử lý..." else "Thanh toan online (VNPay)")
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(
                         onClick = { showMarkPaidSheet = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Danh dau da tra")
+                        Text("Đánh dấu đã trả")
                     }
                 }
             }
@@ -197,14 +197,14 @@ private fun MarkPaidBottomSheet(
     onDismiss: () -> Unit,
     onConfirm: (String, String?, String?) -> Unit
 ) {
-    val methods = listOf("bank_transfer" to "Chuyen khoan", "cash" to "Tien mat", "e_wallet" to "Vi dien tu", "credit_card" to "The tin dung")
+    val methods = listOf("bank_transfer" to "Chuyển khoản", "cash" to "Tiền mặt", "e_wallet" to "Ví điện tử", "credit_card" to "Thẻ tín dụng")
     var selectedMethod by remember { mutableStateOf(methods[0].first) }
     var transactionRef by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Chon phuong thuc thanh toan", style = MaterialTheme.typography.titleMedium)
+            Text("Chọn phương thức thanh toán", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(12.dp))
 
             methods.forEach { (value, label) ->
@@ -221,7 +221,7 @@ private fun MarkPaidBottomSheet(
             OutlinedTextField(
                 value = transactionRef,
                 onValueChange = { transactionRef = it },
-                label = { Text("Ma giao dich (tuy chon)") },
+                label = { Text("Mã giao dịch (tùy chọn)") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -229,7 +229,7 @@ private fun MarkPaidBottomSheet(
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
-                label = { Text("Ghi chu (tuy chon)") },
+                label = { Text("Ghi chú (tùy chọn)") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -238,7 +238,7 @@ private fun MarkPaidBottomSheet(
                 enabled = !isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Xac nhan")
+                Text("Xác nhận")
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

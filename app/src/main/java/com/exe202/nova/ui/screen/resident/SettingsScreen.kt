@@ -29,7 +29,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Cai dat") },
+                title = { Text("Cài đặt") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -45,7 +45,7 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Tai khoan", style = MaterialTheme.typography.titleMedium)
+            Text("Tài khoản", style = MaterialTheme.typography.titleMedium)
 
             Button(
                 onClick = onLogout,
@@ -54,7 +54,7 @@ fun SettingsScreen(
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Dang xuat")
+                Text("Đăng xuất")
             }
         }
     }

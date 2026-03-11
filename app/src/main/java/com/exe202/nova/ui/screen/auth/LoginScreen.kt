@@ -73,7 +73,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = uiState.usernameOrEmail,
                 onValueChange = viewModel::onUsernameOrEmailChange,
-                label = { Text("Email / Ten dang nhap") },
+                label = { Text("Email / Tên đăng nhập") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -83,7 +83,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChange,
-                label = { Text("Mat khau") },
+                label = { Text("Mật khẩu") },
                 singleLine = true,
                 visualTransformation = if (uiState.showPassword) VisualTransformation.None
                     else PasswordVisualTransformation(),
@@ -115,27 +115,27 @@ fun LoginScreen(
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Dang nhap")
+                Text("Đăng nhập")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             HorizontalDivider()
             Spacer(modifier = Modifier.height(8.dp))
-            Text("hoac", style = MaterialTheme.typography.bodySmall)
+            Text("hoặc", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedButton(
                 onClick = { /* Google OAuth - Phase 2 */ },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Dang nhap voi Google")
+                Text("Đăng nhập với Google")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(onClick = onNavigateToRegister) {
-                Text("Chua co tai khoan? Dang ky")
+                Text("Chưa có tài khoản? Đăng ký")
             }
         }
 
