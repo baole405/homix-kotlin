@@ -1,5 +1,6 @@
 package com.exe202.nova.ui.screen.resident
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,7 +52,7 @@ fun MyBookingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lich su dat cho") },
+                title = { Text("Lịch sử đặt chỗ") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -74,7 +75,7 @@ fun MyBookingsScreen(
 
         Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             val filters = BookingStatusFilter.entries.toList()
-            val filterLabels = listOf("Tat ca", "Cho duyet", "Da xac nhan", "Bi tu choi", "Da huy")
+            val filterLabels = listOf("Tất cả", "Chờ duyệt", "Đã xác nhận", "Bị từ chối", "Đã hủy")
 
             LazyRow(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -95,7 +96,7 @@ fun MyBookingsScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
                 if (filtered.isEmpty()) {
-                    EmptyState("Khong co dat cho nao")
+                    EmptyState("Không có đặt chỗ nào")
                 } else {
                     LazyColumn(
                         modifier = Modifier
@@ -106,7 +107,8 @@ fun MyBookingsScreen(
                         items(filtered, key = { it.id }) { booking ->
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     Row(
@@ -121,15 +123,15 @@ fun MyBookingsScreen(
                                     }
                                     Spacer(modifier = Modifier.height(4.dp))
                                     booking.slotNumber?.let {
-                                        Text("Vi tri: $it", style = MaterialTheme.typography.bodySmall)
+                                        Text("Vị trí: $it", style = MaterialTheme.typography.bodySmall)
                                     }
                                     Text(
-                                        "Ngay: ${booking.date.toDisplayDate()} | ${booking.startTime} - ${booking.endTime}",
+                                        "Ngày: ${booking.date.toDisplayDate()} | ${booking.startTime} - ${booking.endTime}",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     booking.numberOfParticipants?.let {
-                                        Text("So nguoi: $it", style = MaterialTheme.typography.bodySmall)
+                                        Text("Số người: $it", style = MaterialTheme.typography.bodySmall)
                                     }
                                 }
                             }
@@ -142,7 +144,7 @@ fun MyBookingsScreen(
 }
 
 private fun serviceTypeLabel(type: ServiceType): String = when (type) {
-    ServiceType.SWIMMING_POOL -> "Be boi"
+    ServiceType.SWIMMING_POOL -> "Bể bơi"
     ServiceType.BBQ -> "BBQ"
-    ServiceType.PARKING -> "Bai xe"
+    ServiceType.PARKING -> "Bãi xe"
 }

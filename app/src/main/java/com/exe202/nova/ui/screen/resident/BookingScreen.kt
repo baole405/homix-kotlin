@@ -55,7 +55,7 @@ fun BookingScreen(
         return
     }
 
-    val tabs = listOf("Be boi", "BBQ", "Bai xe")
+    val tabs = listOf("Bể bơi", "BBQ", "Bãi xe")
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(selectedTabIndex = uiState.selectedTab) {
@@ -80,7 +80,7 @@ fun BookingScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
         ) {
-            Text("Xem lich su dat cho cua toi")
+            Text("Xem lịch sử đặt chỗ của tôi")
         }
     }
 }
@@ -103,13 +103,13 @@ private fun PoolTab(viewModel: BookingViewModel) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(p.name, style = MaterialTheme.typography.titleMedium)
                     Text(p.location, style = MaterialTheme.typography.bodySmall)
-                    Text("Suc chua: ${p.capacity} nguoi | Gio mo cua: ${p.openTime} - ${p.closeTime}", style = MaterialTheme.typography.bodySmall)
-                    Text("Gia: ${p.pricePerHour.toVndFormat()}/gio", style = MaterialTheme.typography.bodySmall)
+                    Text("Sức chứa: ${p.capacity} người | Giờ mở cửa: ${p.openTime} - ${p.closeTime}", style = MaterialTheme.typography.bodySmall)
+                    Text("Giá: ${p.pricePerHour.toVndFormat()}/giờ", style = MaterialTheme.typography.bodySmall)
                 }
             }
         }
 
-        Text("Chon khung gio:", style = MaterialTheme.typography.titleSmall)
+        Text("Chọn khung giờ:", style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             pool.timeSlots.forEach { slot ->
                 FilterChip(
@@ -124,32 +124,32 @@ private fun PoolTab(viewModel: BookingViewModel) {
         OutlinedTextField(
             value = pool.participants,
             onValueChange = viewModel::updatePoolParticipants,
-            label = { Text("So nguoi tham gia") },
+            label = { Text("Số người tham gia") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
         OutlinedTextField(
             value = pool.notes,
             onValueChange = viewModel::updatePoolNotes,
-            label = { Text("Ghi chu (tuy chon)") },
+            label = { Text("Ghi chú (tùy chọn)") },
             modifier = Modifier.fillMaxWidth()
         )
 
         pool.selectedSlot?.let { slot ->
             val hours = 2
             val price = (pool.pool?.pricePerHour ?: 0.0) * hours
-            Text("Tom tat: ${slot.startTime} - ${slot.endTime} | Tong tien: ${price.toVndFormat()}", style = MaterialTheme.typography.bodyMedium)
+            Text("Tóm tắt: ${slot.startTime} - ${slot.endTime} | Tổng tiền: ${price.toVndFormat()}", style = MaterialTheme.typography.bodyMedium)
         }
 
         pool.error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
-        if (pool.submitSuccess) Text("Dat cho thanh cong!", color = MaterialTheme.colorScheme.primary)
+        if (pool.submitSuccess) Text("Đặt chỗ thành công!", color = MaterialTheme.colorScheme.primary)
 
         Button(
             onClick = viewModel::submitPoolBooking,
             enabled = pool.selectedSlot != null && pool.participants.isNotBlank() && !pool.isSubmitting,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (pool.isSubmitting) "Dang xu ly..." else "Dat cho")
+            Text(if (pool.isSubmitting) "Đang xử lý..." else "Đặt chỗ")
         }
     }
 }
@@ -182,7 +182,7 @@ private fun BbqTab(viewModel: BookingViewModel) {
                     ) {
                         Column {
                             Text(slot.name, style = MaterialTheme.typography.titleSmall)
-                            Text("Suc chua: ${slot.capacity} nguoi | ${slot.pricePerHour.toVndFormat()}/gio", style = MaterialTheme.typography.bodySmall)
+                            Text("Sức chứa: ${slot.capacity} người | ${slot.pricePerHour.toVndFormat()}/giờ", style = MaterialTheme.typography.bodySmall)
                         }
                         if (isDisabled) Text("Bao tri", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
                     }
@@ -192,7 +192,7 @@ private fun BbqTab(viewModel: BookingViewModel) {
                         OutlinedTextField(
                             value = bbq.startTime,
                             onValueChange = viewModel::updateBbqStartTime,
-                            label = { Text("Gio bat dau (HH:mm)") },
+                            label = { Text("Giờ bắt đầu (HH:mm)") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true
                         )
@@ -200,7 +200,7 @@ private fun BbqTab(viewModel: BookingViewModel) {
                         OutlinedTextField(
                             value = bbq.endTime,
                             onValueChange = viewModel::updateBbqEndTime,
-                            label = { Text("Gio ket thuc (HH:mm)") },
+                            label = { Text("Giờ kết thúc (HH:mm)") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true
                         )
@@ -208,7 +208,7 @@ private fun BbqTab(viewModel: BookingViewModel) {
                         OutlinedTextField(
                             value = bbq.participants,
                             onValueChange = viewModel::updateBbqParticipants,
-                            label = { Text("So nguoi tham gia") },
+                            label = { Text("Số người tham gia") },
                             modifier = Modifier.fillMaxWidth(),
                             singleLine = true
                         )
@@ -216,12 +216,12 @@ private fun BbqTab(viewModel: BookingViewModel) {
                         OutlinedTextField(
                             value = bbq.notes,
                             onValueChange = viewModel::updateBbqNotes,
-                            label = { Text("Ghi chu (tuy chon)") },
+                            label = { Text("Ghi chú (tùy chọn)") },
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         bbq.error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
-                        if (bbq.submitSuccess) Text("Dat cho thanh cong!", color = MaterialTheme.colorScheme.primary)
+                        if (bbq.submitSuccess) Text("Đặt chỗ thành công!", color = MaterialTheme.colorScheme.primary)
 
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
@@ -229,7 +229,7 @@ private fun BbqTab(viewModel: BookingViewModel) {
                             enabled = bbq.startTime.isNotBlank() && bbq.endTime.isNotBlank() && bbq.participants.isNotBlank() && !bbq.isSubmitting,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text(if (bbq.isSubmitting) "Dang xu ly..." else "Dat cho")
+                            Text(if (bbq.isSubmitting) "Đang xử lý..." else "Đặt chỗ")
                         }
                     }
                 }
@@ -254,21 +254,21 @@ private fun ParkingTab(viewModel: BookingViewModel) {
     ) {
         // Daily/Monthly toggle
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = !parking.isMonthly, onClick = { viewModel.toggleParkingMode(false) }, label = { Text("Theo ngay") })
-            FilterChip(selected = parking.isMonthly, onClick = { viewModel.toggleParkingMode(true) }, label = { Text("Theo thang") })
+            FilterChip(selected = !parking.isMonthly, onClick = { viewModel.toggleParkingMode(false) }, label = { Text("Theo ngày") })
+            FilterChip(selected = parking.isMonthly, onClick = { viewModel.toggleParkingMode(true) }, label = { Text("Theo tháng") })
         }
 
         // Vehicle filter
-        Text("Loai xe:", style = MaterialTheme.typography.titleSmall)
+        Text("Loại xe:", style = MaterialTheme.typography.titleSmall)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = parking.vehicleFilter == null, onClick = { viewModel.setParkingVehicleFilter(null) }, label = { Text("Tat ca") })
-            FilterChip(selected = parking.vehicleFilter == VehicleType.CAR, onClick = { viewModel.setParkingVehicleFilter(VehicleType.CAR) }, label = { Text("O to") })
-            FilterChip(selected = parking.vehicleFilter == VehicleType.MOTORBIKE, onClick = { viewModel.setParkingVehicleFilter(VehicleType.MOTORBIKE) }, label = { Text("Xe may") })
-            FilterChip(selected = parking.vehicleFilter == VehicleType.BICYCLE, onClick = { viewModel.setParkingVehicleFilter(VehicleType.BICYCLE) }, label = { Text("Xe dap") })
+            FilterChip(selected = parking.vehicleFilter == null, onClick = { viewModel.setParkingVehicleFilter(null) }, label = { Text("Tất cả") })
+            FilterChip(selected = parking.vehicleFilter == VehicleType.CAR, onClick = { viewModel.setParkingVehicleFilter(VehicleType.CAR) }, label = { Text("Ô tô") })
+            FilterChip(selected = parking.vehicleFilter == VehicleType.MOTORBIKE, onClick = { viewModel.setParkingVehicleFilter(VehicleType.MOTORBIKE) }, label = { Text("Xe máy") })
+            FilterChip(selected = parking.vehicleFilter == VehicleType.BICYCLE, onClick = { viewModel.setParkingVehicleFilter(VehicleType.BICYCLE) }, label = { Text("Xe đạp") })
         }
 
         // Slot grid
-        Text("Chon o do xe:", style = MaterialTheme.typography.titleSmall)
+        Text("Chọn ô đỗ xe:", style = MaterialTheme.typography.titleSmall)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             filtered.forEach { slot ->
                 val isSelected = slot.id in parking.selectedSlotIds
@@ -285,25 +285,25 @@ private fun ParkingTab(viewModel: BookingViewModel) {
         if (parking.selectedSlotIds.isNotEmpty()) {
             val pricePerUnit = filtered.filter { it.id in parking.selectedSlotIds }
                 .sumOf { if (parking.isMonthly) it.pricePerMonth else it.pricePerDay }
-            Text("Da chon ${parking.selectedSlotIds.size} o | Tong: ${pricePerUnit.toVndFormat()}", style = MaterialTheme.typography.bodyMedium)
+            Text("Đã chọn ${parking.selectedSlotIds.size} ô | Tổng: ${pricePerUnit.toVndFormat()}", style = MaterialTheme.typography.bodyMedium)
         }
 
         OutlinedTextField(
             value = parking.notes,
             onValueChange = viewModel::updateParkingNotes,
-            label = { Text("Ghi chu (tuy chon)") },
+            label = { Text("Ghi chú (tùy chọn)") },
             modifier = Modifier.fillMaxWidth()
         )
 
         parking.error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
-        if (parking.submitSuccess) Text("Dat cho thanh cong!", color = MaterialTheme.colorScheme.primary)
+        if (parking.submitSuccess) Text("Đặt chỗ thành công!", color = MaterialTheme.colorScheme.primary)
 
         Button(
             onClick = viewModel::submitParkingBooking,
             enabled = parking.selectedSlotIds.isNotEmpty() && !parking.isSubmitting,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (parking.isSubmitting) "Dang xu ly..." else "Dat cho")
+            Text(if (parking.isSubmitting) "Đang xử lý..." else "Đặt chỗ")
         }
     }
 }

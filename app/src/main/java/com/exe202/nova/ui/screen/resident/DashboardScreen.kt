@@ -1,5 +1,6 @@
 package com.exe202.nova.ui.screen.resident
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -72,7 +73,7 @@ fun DashboardScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Xin chao, ${uiState.user?.fullName ?: ""}",
+                text = "Xin chào, ${uiState.user?.fullName ?: ""}",
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -83,12 +84,12 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Hoa don sap den han", style = MaterialTheme.typography.titleMedium)
-                TextButton(onClick = onNavigateToBills) { Text("Xem tat ca") }
+                Text("Hóa đơn sắp đến hạn", style = MaterialTheme.typography.titleMedium)
+                TextButton(onClick = onNavigateToBills) { Text("Xem tất cả") }
             }
 
             if (uiState.upcomingBills.isEmpty()) {
-                Text("Khong co hoa don sap den han", style = MaterialTheme.typography.bodyMedium)
+                Text("Không có hóa đơn sắp đến hạn", style = MaterialTheme.typography.bodyMedium)
             } else {
                 uiState.upcomingBills.forEach { bill ->
                     Card(
@@ -96,7 +97,8 @@ fun DashboardScreen(
                             .fillMaxWidth()
                             .padding(vertical = 4.dp)
                             .clickable { },
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Row(
@@ -108,7 +110,7 @@ fun DashboardScreen(
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(bill.amount.toVndFormat(), style = MaterialTheme.typography.bodyLarge)
-                            Text("Han: ${bill.dueDate.toDisplayDate()}", style = MaterialTheme.typography.bodySmall)
+                            Text("Hạn: ${bill.dueDate.toDisplayDate()}", style = MaterialTheme.typography.bodySmall)
                         }
                     }
                 }
@@ -116,7 +118,7 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text("Dat cho nhanh", style = MaterialTheme.typography.titleMedium)
+            Text("Đặt chỗ nhanh", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -125,7 +127,7 @@ fun DashboardScreen(
                 FilledTonalButton(onClick = onNavigateToBooking) {
                     Icon(Icons.Outlined.Pool, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Be boi")
+                    Text("Bể bơi")
                 }
                 FilledTonalButton(onClick = onNavigateToBooking) {
                     Icon(Icons.Outlined.CalendarMonth, contentDescription = null)
@@ -135,7 +137,7 @@ fun DashboardScreen(
                 FilledTonalButton(onClick = onNavigateToBooking) {
                     Icon(Icons.Outlined.LocalParking, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Bai xe")
+                    Text("Bãi xe")
                 }
             }
 
@@ -146,19 +148,20 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Thong bao gan day", style = MaterialTheme.typography.titleMedium)
-                TextButton(onClick = onNavigateToNotifications) { Text("Xem tat ca") }
+                Text("Thông báo gần đây", style = MaterialTheme.typography.titleMedium)
+                TextButton(onClick = onNavigateToNotifications) { Text("Xem tất cả") }
             }
 
             if (uiState.recentNotifications.isEmpty()) {
-                Text("Khong co thong bao", style = MaterialTheme.typography.bodyMedium)
+                Text("Không có thông báo", style = MaterialTheme.typography.bodyMedium)
             } else {
                 uiState.recentNotifications.forEach { notification ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Text(notification.title, style = MaterialTheme.typography.titleSmall)

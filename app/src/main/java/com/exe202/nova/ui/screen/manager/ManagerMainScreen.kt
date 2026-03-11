@@ -1,20 +1,26 @@
 package com.exe202.nova.ui.screen.manager
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Dashboard
-import androidx.compose.material.icons.outlined.MoreHoriz
-import androidx.compose.material.icons.outlined.People
-import androidx.compose.material.icons.outlined.Receipt
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -22,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.exe202.nova.ui.component.AppDrawer
 import com.exe202.nova.ui.navigation.ManagerAnnouncementsRoute
 import com.exe202.nova.ui.navigation.ManagerApartmentsRoute
 import com.exe202.nova.ui.navigation.ManagerBillingRoute
@@ -31,57 +38,66 @@ import com.exe202.nova.ui.navigation.ManagerCustomerDetailRoute
 import com.exe202.nova.ui.navigation.ManagerCustomersRoute
 import com.exe202.nova.ui.navigation.ManagerDashboardRoute
 import com.exe202.nova.ui.navigation.ManagerFacilitiesRoute
-import com.exe202.nova.ui.navigation.ManagerMoreRoute
 import com.exe202.nova.ui.navigation.ManagerReportsRoute
-import com.exe202.nova.ui.screen.resident.ResidentTab
-import com.exe202.nova.ui.theme.NovaTheme
+import com.exe202.nova.ui.theme.ManagerAccent
+import kotlinx.coroutines.launch
 
-private val managerTabs = listOf(
-    ResidentTab(ManagerDashboardRoute, "Tổng quan", Icons.Outlined.Dashboard),
-    ResidentTab(ManagerBookingsRoute, "Đặt chỗ", Icons.Outlined.CalendarMonth),
-    ResidentTab(ManagerBillingRoute, "Hóa đơn", Icons.Outlined.Receipt),
-    ResidentTab(ManagerCustomersRoute, "Cư dân", Icons.Outlined.People),
-    ResidentTab(ManagerMoreRoute, "Thêm", Icons.Outlined.MoreHoriz),
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagerMainScreen(onLogout: () -> Unit) {
     val nestedNavController = rememberNavController()
     val navBackStackEntry by nestedNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-    // Tab routes for bottom bar visibility
-    val tabRoutes = setOf(
-        ManagerDashboardRoute::class,
-        ManagerBookingsRoute::class,
-        ManagerBillingRoute::class,
-        ManagerCustomersRoute::class,
-        ManagerMoreRoute::class
-    )
-    val showBottomBar = tabRoutes.any { currentDestination?.hasRoute(it) == true }
+    val title = when {
+        currentDestination?.hasRoute(ManagerDashboardRoute::class) == true -> "Tổng quan"
+        currentDestination?.hasRoute(ManagerBookingsRoute::class) == true -> "Quản lý Booking"
+        currentDestination?.hasRoute(ManagerBillingRoute::class) == true -> "Quản lý Hóa đơn"
+        currentDestination?.hasRoute(ManagerCustomersRoute::class) == true -> "Quản lý Cư dân"
+        currentDestination?.hasRoute(ManagerCustomerDetailRoute::class) == true -> "Chi tiết Cư dân"
+        currentDestination?.hasRoute(ManagerApartmentsRoute::class) == true -> "Quản lý Căn hộ"
+        currentDestination?.hasRoute(ManagerFacilitiesRoute::class) == true -> "Quản lý Tiện ích"
+        currentDestination?.hasRoute(ManagerAnnouncementsRoute::class) == true -> "Thông báo BQL"
+        currentDestination?.hasRoute(ManagerCreateAnnouncementRoute::class) == true -> "Tạo Thông báo"
+        currentDestination?.hasRoute(ManagerReportsRoute::class) == true -> "Báo cáo"
+        else -> "Nova"
+    }
 
-    NovaTheme(isManager = true) {
+    AppDrawer(
+        isManager = true,
+        drawerState = drawerState,
+        currentDestination = currentDestination,
+        onNavigateTo = { route ->
+            nestedNavController.navigate(route) {
+                popUpTo(nestedNavController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+        onLogout = onLogout
+    ) {
         Scaffold(
-            bottomBar = {
-                if (showBottomBar) {
-                    NavigationBar {
-                        managerTabs.forEach { tab ->
-                            NavigationBarItem(
-                                icon = { Icon(tab.icon, contentDescription = tab.label) },
-                                label = { Text(tab.label) },
-                                selected = currentDestination?.hasRoute(tab.route::class) == true,
-                                onClick = {
-                                    nestedNavController.navigate(tab.route) {
-                                        popUpTo(nestedNavController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
-                            )
+            topBar = {
+                Column {
+                    TopAppBar(
+                        title = { Text(title) },
+                        navigationIcon = {
+                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Icon(Icons.Default.Menu, contentDescription = "Mở menu")
+                            }
                         }
-                    }
+                    )
+                    // Manager accent line below top bar
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(2.dp)
+                            .background(ManagerAccent)
+                    )
                 }
             }
         ) { innerPadding ->
@@ -111,14 +127,6 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
                     ManagerCustomerDetailScreen(
                         customerId = route.customerId,
                         onNavigateBack = { nestedNavController.popBackStack() }
-                    )
-                }
-                composable<ManagerMoreRoute> {
-                    ManagerMoreScreen(
-                        onNavigateToApartments = { nestedNavController.navigate(ManagerApartmentsRoute) },
-                        onNavigateToFacilities = { nestedNavController.navigate(ManagerFacilitiesRoute) },
-                        onNavigateToAnnouncements = { nestedNavController.navigate(ManagerAnnouncementsRoute) },
-                        onNavigateToReports = { nestedNavController.navigate(ManagerReportsRoute) }
                     )
                 }
                 composable<ManagerApartmentsRoute> {

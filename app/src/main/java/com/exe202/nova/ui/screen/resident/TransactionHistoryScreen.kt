@@ -1,5 +1,6 @@
 package com.exe202.nova.ui.screen.resident
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,7 +57,7 @@ fun TransactionHistoryScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         if (uiState.transactions.isEmpty()) {
-            EmptyState("Chua co giao dich nao")
+            EmptyState("Chưa có giao dịch nào")
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -67,7 +68,8 @@ fun TransactionHistoryScreen(
                 items(uiState.transactions, key = { it.id }) { tx ->
                     Card(
                         modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Row(
@@ -98,7 +100,7 @@ fun TransactionHistoryScreen(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Text(
-                                "Ma GD: ${tx.transactionCode}",
+                                "Mã GD: ${tx.transactionCode}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                             )
@@ -111,8 +113,8 @@ fun TransactionHistoryScreen(
 }
 
 private fun paymentMethodLabel(method: PaymentMethod): String = when (method) {
-    PaymentMethod.BANK_TRANSFER -> "Chuyen khoan ngan hang"
-    PaymentMethod.CASH -> "Tien mat"
-    PaymentMethod.E_WALLET -> "Vi dien tu"
-    PaymentMethod.CREDIT_CARD -> "The tin dung"
+    PaymentMethod.BANK_TRANSFER -> "Chuyển khoản ngân hàng"
+    PaymentMethod.CASH -> "Tiền mặt"
+    PaymentMethod.E_WALLET -> "Ví điện tử"
+    PaymentMethod.CREDIT_CARD -> "Thẻ tín dụng"
 }

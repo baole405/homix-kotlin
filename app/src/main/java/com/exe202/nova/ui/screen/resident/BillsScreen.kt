@@ -1,5 +1,6 @@
 package com.exe202.nova.ui.screen.resident
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,7 @@ fun BillsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val filteredBills = viewModel.filteredBills()
 
-    val tabs = listOf("Tat ca", "Cho thanh toan", "Da thanh toan", "Qua han")
+    val tabs = listOf("Tất cả", "Chờ thanh toán", "Đã thanh toán", "Quá hạn")
     val filters = BillFilter.entries.toList()
 
     if (uiState.isLoading) {
@@ -76,7 +77,7 @@ fun BillsScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             if (filteredBills.isEmpty()) {
-                EmptyState("Khong co hoa don")
+                EmptyState("Không có hóa đơn")
             } else {
                 LazyColumn(
                     modifier = Modifier
@@ -89,7 +90,8 @@ fun BillsScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { onNavigateToBillDetail(bill.id) },
-                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(
@@ -111,12 +113,12 @@ fun BillsScreen(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    "Ky: ${bill.period}",
+                                    "Kỳ: ${bill.period}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    "Han: ${bill.dueDate.toDisplayDate()}",
+                                    "Hạn: ${bill.dueDate.toDisplayDate()}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )

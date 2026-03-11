@@ -31,7 +31,7 @@ fun ErrorScreen(message: String, onRetry: () -> Unit, modifier: Modifier = Modif
     ) {
         Text(text = message, color = MaterialTheme.colorScheme.error)
         Spacer(modifier = Modifier.height(12.dp))
-        Button(onClick = onRetry) { Text("Thu lai") }
+        Button(onClick = onRetry) { Text("Thử lại") }
     }
 }
 
