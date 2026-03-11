@@ -46,7 +46,7 @@ enum class SlotStatus {
     @SerializedName("maintenance") MAINTENANCE
 }
 
-enum class FeeType {
+enum class FeeTypeCategory {
     @SerializedName("electricity") ELECTRICITY,
     @SerializedName("water") WATER,
     @SerializedName("parking") PARKING,

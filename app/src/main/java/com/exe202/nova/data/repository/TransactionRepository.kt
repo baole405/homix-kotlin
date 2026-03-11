@@ -7,11 +7,17 @@ import javax.inject.Singleton
 
 @Singleton
 class TransactionRepository @Inject constructor(
-    private val transactionApi: TransactionApi
+    private val api: TransactionApi
 ) {
-    suspend fun getTransactions(): List<Transaction> {
-        val response = transactionApi.getTransactions()
-        if (!response.isSuccessful) throw Exception("Get transactions failed: ${response.code()}")
-        return response.body() ?: emptyList()
+    suspend fun getTransactions(): Result<List<Transaction>> = runCatching {
+        val response = api.getTransactions()
+        if (response.isSuccessful) response.body() ?: error("Empty response body")
+        else error("Lỗi ${response.code()}: ${response.message()}")
+    }
+
+    suspend fun getTransactionsByMonth(month: String): Result<List<Transaction>> = runCatching {
+        val response = api.getTransactionsByMonth(month)
+        if (response.isSuccessful) response.body() ?: error("Empty response body")
+        else error("Lỗi ${response.code()}: ${response.message()}")
     }
 }

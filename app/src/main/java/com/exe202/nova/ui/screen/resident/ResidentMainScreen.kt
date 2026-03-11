@@ -78,7 +78,6 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
                 restoreState = true
             }
         },
-        onLogout = onLogout
     ) {
         Scaffold(
             topBar = {

@@ -62,9 +62,6 @@ object ManagerCustomersRoute
 data class ManagerCustomerDetailRoute(val customerId: String)
 
 @Serializable
-object ManagerMoreRoute
-
-@Serializable
 object ManagerApartmentsRoute
 
 @Serializable
@@ -78,3 +75,6 @@ object ManagerCreateAnnouncementRoute
 
 @Serializable
 object ManagerReportsRoute
+
+@Serializable
+object ManagerFeeTypesRoute

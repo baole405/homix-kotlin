@@ -2,10 +2,13 @@ package com.exe202.nova.di
 
 import com.exe202.nova.BuildConfig
 import com.exe202.nova.data.remote.AuthInterceptor
+import com.exe202.nova.data.remote.api.ApartmentApi
 import com.exe202.nova.data.remote.api.AuthApi
+import com.exe202.nova.data.remote.api.FeeTypeApi
 import com.exe202.nova.data.remote.api.BillApi
 import com.exe202.nova.data.remote.api.BookingApi
 import com.exe202.nova.data.remote.api.NotificationApi
+import com.exe202.nova.data.remote.api.StatsApi
 import com.exe202.nova.data.remote.api.TransactionApi
 import dagger.Module
 import dagger.Provides
@@ -30,11 +33,13 @@ object NetworkModule {
             .readTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)
-            .addInterceptor(
-                HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    })
                 }
-            )
+            }
             .build()
     }
 
@@ -67,4 +72,19 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideNotificationApi(retrofit: Retrofit): NotificationApi = retrofit.create(NotificationApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideApartmentApi(retrofit: Retrofit): ApartmentApi =
+        retrofit.create(ApartmentApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideStatsApi(retrofit: Retrofit): StatsApi =
+        retrofit.create(StatsApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFeeTypeApi(retrofit: Retrofit): FeeTypeApi =
+        retrofit.create(FeeTypeApi::class.java)
 }

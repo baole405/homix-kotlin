@@ -7,7 +7,7 @@ import com.exe202.nova.data.model.ManagerBill
 import com.exe202.nova.data.model.ManagerBooking
 import com.exe202.nova.data.repository.ManagerBillRepository
 import com.exe202.nova.data.repository.ManagerBookingRepository
-import com.exe202.nova.data.mock.MOCK_DASHBOARD_STATS
+import com.exe202.nova.data.repository.StatsRepository
 import com.exe202.nova.data.model.BillStatus
 import com.exe202.nova.data.model.BookingStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import kotlinx.coroutines.supervisorScope
 import javax.inject.Inject
 
 data class ManagerDashboardUiState(
-    val stats: DashboardStats = MOCK_DASHBOARD_STATS,
+    val stats: DashboardStats? = null,
     val pendingBookings: List<ManagerBooking> = emptyList(),
     val overdueBills: List<ManagerBill> = emptyList(),
     val isLoading: Boolean = true,
@@ -31,7 +31,8 @@ data class ManagerDashboardUiState(
 @HiltViewModel
 class ManagerDashboardViewModel @Inject constructor(
     private val bookingRepository: ManagerBookingRepository,
-    private val billRepository: ManagerBillRepository
+    private val billRepository: ManagerBillRepository,
+    private val statsRepository: StatsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ManagerDashboardUiState())
@@ -45,20 +46,14 @@ class ManagerDashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                supervisorScope {
-                    val bookingsDeferred = async { bookingRepository.getAllBookings() }
-                    val billsDeferred = async { billRepository.getAllBills() }
-
-                    val bookings = bookingsDeferred.await()
-                    val bills = billsDeferred.await()
-
-                    _uiState.update {
-                        it.copy(
-                            pendingBookings = bookings.filter { b -> b.status == BookingStatus.PENDING }.take(3),
-                            overdueBills = bills.filter { b -> b.status == BillStatus.OVERDUE }.take(3),
-                            isLoading = false
-                        )
-                    }
+                val (stats, bookings, bills) = fetchDashboardData()
+                _uiState.update {
+                    it.copy(
+                        stats = stats,
+                        pendingBookings = bookings.filter { b -> b.status == BookingStatus.PENDING }.take(3),
+                        overdueBills = bills.filter { b -> b.status == BillStatus.OVERDUE }.take(3),
+                        isLoading = false
+                    )
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isLoading = false, error = e.message) }
@@ -70,26 +65,47 @@ class ManagerDashboardViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isRefreshing = true) }
             try {
-                supervisorScope {
-                    val bookingsDeferred = async { bookingRepository.getAllBookings() }
-                    val billsDeferred = async { billRepository.getAllBills() }
-
-                    val bookings = bookingsDeferred.await()
-                    val bills = billsDeferred.await()
-
-                    _uiState.update {
-                        it.copy(
-                            pendingBookings = bookings.filter { b -> b.status == BookingStatus.PENDING }.take(3),
-                            overdueBills = bills.filter { b -> b.status == BillStatus.OVERDUE }.take(3),
-                            isRefreshing = false,
-                            error = null
-                        )
-                    }
+                val (stats, bookings, bills) = fetchDashboardData()
+                _uiState.update {
+                    it.copy(
+                        stats = stats,
+                        pendingBookings = bookings.filter { b -> b.status == BookingStatus.PENDING }.take(3),
+                        overdueBills = bills.filter { b -> b.status == BillStatus.OVERDUE }.take(3),
+                        isRefreshing = false,
+                        error = null
+                    )
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(isRefreshing = false, error = e.message) }
             }
         }
+    }
+
+    private data class DashboardData(
+        val stats: DashboardStats?,
+        val bookings: List<ManagerBooking>,
+        val bills: List<ManagerBill>
+    )
+
+    private suspend fun fetchDashboardData(): DashboardData = supervisorScope {
+        val bookingsDeferred = async { bookingRepository.getAllBookings() }
+        val billsDeferred = async { billRepository.getAllBills() }
+        val statsDeferred = async { statsRepository.getOverview() }
+
+        val bookings = bookingsDeferred.await()
+        val bills = billsDeferred.await()
+        val stats = statsDeferred.await().getOrNull()?.let {
+            DashboardStats(
+                totalApartments = it.totalApartments,
+                occupiedApartments = it.occupiedApartments,
+                pendingBills = it.pendingBills,
+                overdueBills = it.overdueBills,
+                pendingBookings = it.pendingBookings,
+                pendingComplaints = it.pendingComplaints
+            )
+        }
+
+        DashboardData(stats = stats, bookings = bookings, bills = bills)
     }
 
     fun approveBooking(id: Int) {

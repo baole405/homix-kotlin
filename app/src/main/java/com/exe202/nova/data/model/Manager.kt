@@ -23,7 +23,7 @@ data class ManagerBill(
     val dueDate: String,
     val period: String,
     val status: BillStatus,
-    val feeType: FeeType,
+    val feeType: FeeTypeCategory,
     val apartmentUnit: String,
     val apartmentBlock: String,
     val residentName: String
@@ -79,4 +79,41 @@ data class RevenueData(
 data class BookingStatsData(
     val serviceType: ServiceType,
     val count: Int
+)
+
+data class StatsOverview(
+    val totalApartments: Int,
+    val occupiedApartments: Int,
+    val pendingBills: Int,
+    val overdueBills: Int,
+    val pendingBookings: Int,
+    val pendingComplaints: Int = 0
+)
+
+data class StatsRevenue(
+    val thisMonth: Double,
+    val lastMonth: Double,
+    val growth: Double,
+    val chart: List<RevenueData> = emptyList()
+)
+
+data class StatsActivity(
+    val bookings: List<BookingStatsData> = emptyList()
+)
+
+data class FeeType(
+    val id: Int,
+    val name: String,
+    val description: String?,
+    val unitPrice: Double,
+    val measureUnit: String?,
+    val isRecurring: Boolean
+)
+
+data class CreateFeeTypeRequest(
+    val name: String,
+    val description: String? = null,
+    val unitPrice: Double,
+    val measureUnit: String? = null,
+    val isRecurring: Boolean = false
 )
