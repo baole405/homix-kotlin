@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +22,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.exe202.nova.data.model.BookingStatus
 import com.exe202.nova.data.model.ServiceType
 import com.exe202.nova.ui.component.BookingStatusChip
 import com.exe202.nova.ui.component.EmptyState
@@ -132,6 +135,19 @@ fun MyBookingsScreen(
                                     )
                                     booking.numberOfParticipants?.let {
                                         Text("Số người: $it", style = MaterialTheme.typography.bodySmall)
+                                    }
+                                    if (booking.status == BookingStatus.PENDING) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        OutlinedButton(
+                                            onClick = { viewModel.cancelBooking(booking.id) },
+                                            modifier = Modifier.fillMaxWidth(),
+                                            colors = ButtonDefaults.outlinedButtonColors(
+                                                contentColor = MaterialTheme.colorScheme.error
+                                            ),
+                                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                                        ) {
+                                            Text("Hủy đặt chỗ")
+                                        }
                                     }
                                 }
                             }

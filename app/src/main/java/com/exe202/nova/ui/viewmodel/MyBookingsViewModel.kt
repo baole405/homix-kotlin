@@ -19,7 +19,8 @@ data class MyBookingsUiState(
     val selectedFilter: BookingStatusFilter = BookingStatusFilter.ALL,
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val cancellingId: Int? = null
 )
 
 @HiltViewModel
@@ -59,6 +60,19 @@ class MyBookingsViewModel @Inject constructor(
     }
 
     fun selectFilter(filter: BookingStatusFilter) = _uiState.update { it.copy(selectedFilter = filter) }
+
+    fun cancelBooking(id: Int) {
+        _uiState.update { state ->
+            state.copy(
+                cancellingId = id,
+                allBookings = state.allBookings.map { booking ->
+                    if (booking.id == id) booking.copy(status = BookingStatus.CANCELLED)
+                    else booking
+                }
+            )
+        }
+        _uiState.update { it.copy(cancellingId = null) }
+    }
 
     fun filteredBookings(): List<Booking> {
         val state = _uiState.value
