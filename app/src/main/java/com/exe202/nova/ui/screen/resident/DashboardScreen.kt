@@ -148,6 +148,49 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Text("Tin tức & Thông báo BQL", style = MaterialTheme.typography.titleMedium)
+            }
+
+            if (uiState.announcements.isEmpty()) {
+                Text(
+                    "Không có thông báo nào",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                uiState.announcements.forEach { announcement ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(announcement.title, style = MaterialTheme.typography.titleSmall)
+                            Text(
+                                announcement.content,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 2,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                announcement.createdAt.toDisplayDate(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text("Thông báo gần đây", style = MaterialTheme.typography.titleMedium)
                 TextButton(onClick = onNavigateToNotifications) { Text("Xem tất cả") }
             }
