@@ -31,6 +31,8 @@ import com.exe202.nova.ui.navigation.NotificationsRoute
 import com.exe202.nova.ui.navigation.ProfileRoute
 import com.exe202.nova.ui.navigation.SettingsRoute
 import com.exe202.nova.ui.navigation.TransactionHistoryRoute
+import com.exe202.nova.ui.navigation.FacilitiesRoute
+import com.exe202.nova.ui.navigation.MaintenanceRoute
 import kotlinx.coroutines.launch
 
 private fun screenTitle(route: Any?): String = when (route) {
@@ -62,6 +64,8 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
         currentDestination?.hasRoute(ProfileRoute::class) == true -> "Tài khoản"
         currentDestination?.hasRoute(TransactionHistoryRoute::class) == true -> "Lịch sử giao dịch"
         currentDestination?.hasRoute(SettingsRoute::class) == true -> "Cài đặt"
+        currentDestination?.hasRoute(FacilitiesRoute::class) == true -> "Tiện ích"
+        currentDestination?.hasRoute(MaintenanceRoute::class) == true -> "Yêu cầu sửa chữa"
         else -> "Nova"
     }
 
@@ -140,6 +144,12 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
                         onNavigateBack = { nestedNavController.popBackStack() },
                         onLogout = onLogout
                     )
+                }
+                composable<FacilitiesRoute> {
+                    FacilitiesScreen(onNavigateToBooking = { nestedNavController.navigate(BookingRoute) })
+                }
+                composable<MaintenanceRoute> {
+                    MaintenanceRequestScreen()
                 }
             }
         }

@@ -64,6 +64,9 @@ import com.exe202.nova.ui.navigation.ManagerReportsRoute
 import com.exe202.nova.ui.navigation.NotificationsRoute
 import com.exe202.nova.ui.navigation.ProfileRoute
 import com.exe202.nova.ui.navigation.TransactionHistoryRoute
+import com.exe202.nova.ui.navigation.FacilitiesRoute
+import com.exe202.nova.ui.navigation.MaintenanceRoute
+import androidx.compose.material.icons.outlined.Build
 import com.exe202.nova.ui.theme.LocalIsDarkTheme
 import com.exe202.nova.ui.theme.LocalToggleTheme
 import com.exe202.nova.ui.theme.ManagerAccent
@@ -80,7 +83,9 @@ private val residentItems = listOf(
     null, // divider
     DrawerItem(BillsRoute, "Hóa đơn", Icons.Outlined.Receipt),
     DrawerItem(BookingRoute, "Đặt chỗ", Icons.Outlined.CalendarMonth),
+    DrawerItem(FacilitiesRoute, "Tiện ích", Icons.Outlined.Pool),
     DrawerItem(TransactionHistoryRoute, "Lịch sử giao dịch", Icons.Outlined.HistoryEdu),
+    DrawerItem(MaintenanceRoute, "Yêu cầu sửa chữa", Icons.Outlined.Build),
     null, // divider
     DrawerItem(NotificationsRoute, "Thông báo", Icons.Outlined.Notifications),
     DrawerItem(ProfileRoute, "Tài khoản", Icons.Outlined.Person),

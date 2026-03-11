@@ -78,3 +78,10 @@ object ManagerReportsRoute
 
 @Serializable
 object ManagerFeeTypesRoute
+
+// Resident feature routes
+@Serializable
+object FacilitiesRoute
+
+@Serializable
+object MaintenanceRoute
