@@ -54,18 +54,9 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"${apiUrl}/\"")
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${envVars["GOOGLE_CLIENT_ID"] ?: ""}\"")
         buildConfigField("String", "AUTH_BASE_URL", "\"${envVars["NEXT_PUBLIC_BETTER_AUTH_URL"] ?: "http://10.0.2.2:5000"}\"")
-        val mapboxPublicKey = envVars["MAPBOX_PUBLIC_KEY"]
-            ?: envVars["MAPBOX_ACCESS_TOKEN"]
-            ?: localVars["MAPBOX_PUBLIC_KEY"]
-            ?: localVars["MAPBOX_ACCESS_TOKEN"]
-            ***REMOVED***
-        val googleMapsUrl = envVars["MAP_DEFAULT_GOOGLE_MAPS_URL"]
-            ?: "https://maps.google.com/?q=10.762622,106.660172"
         val geminiApiKey = envVars["GEMINI_API_KEY"]
             ?: localVars["GEMINI_API_KEY"]
             ?: "AIzaSyBQqtvoe53CB4r82mf_kT5DP1OjzwQA6Ik"
-        buildConfigField("String", "MAPBOX_PUBLIC_KEY", "\"${mapboxPublicKey}\"")
-        buildConfigField("String", "MAP_DEFAULT_GOOGLE_MAPS_URL", "\"${googleMapsUrl}\"")
         buildConfigField("String", "GEMINI_API_KEY", "\"${geminiApiKey}\"")
     }
 
@@ -146,7 +137,6 @@ dependencies {
     // Browser (Chrome Custom Tabs)
     implementation(libs.browser)
 
-    implementation("com.mapbox.maps:android-ndk27:11.20.1")
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

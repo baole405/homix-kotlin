@@ -153,9 +153,9 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
                 composable<ResidentChatRoute> {
                     ResidentChatScreen()
                 }
-//                composable<MapRoute> {
-//                    MapScreen()
-//                }
+                composable<MapRoute> {
+                    MapScreen()
+                }
             }
         }
     }
