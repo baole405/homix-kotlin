@@ -1,0 +1,555 @@
+﻿NOVA Backend API Context (Frontend-focused)
+
+Generated from current controllers/services in this repository.
+Global prefix: /api
+Swagger docs: /api/docs
+
+Total implemented endpoints: 25
+
+====================================================================
+A) Stable response contracts for frontend
+====================================================================
+
+There is NO single success envelope in this backend.
+Each endpoint returns its own JSON shape.
+
+Use endpoint-specific parsing (do not assume { data, message } for all APIs).
+
+A.1 Common error JSON (NestJS default)
+When an endpoint throws HttpException/validation error, response shape is usually:
+{
+  "statusCode": 400,
+  "message": "error message string OR array of strings",
+  "error": "Bad Request"
+}
+
+Notes:
+- Validation errors can return message as string[]
+- Forbidden/Not Found/Conflict/Unauthorized keep same top-level keys
+- Example 401:
+  {
+    "statusCode": 401,
+    "message": "Invalid credentials",
+    "error": "Unauthorized"
+  }
+- Example 403:
+  {
+    "statusCode": 403,
+    "message": "You can only view your own bills",
+    "error": "Forbidden"
+  }
+- Example 404:
+  {
+    "statusCode": 404,
+    "message": "Bill not found",
+    "error": "Not Found"
+  }
+- Example 409:
+  {
+    "statusCode": 409,
+    "message": "Email already exists",
+    "error": "Conflict"
+  }
+
+A.2 Type notes
+- Postgres decimal/date/time values are often serialized as strings.
+- Date/time columns can appear as ISO datetime strings.
+- For safety in mobile app, parse amount as Number(value) when needed.
+
+====================================================================
+B) Endpoint by endpoint: exact success JSON shape
+====================================================================
+
+--------------------------------------------------------------------
+1) Authentication (base: /api/auth)
+--------------------------------------------------------------------
+
+1.1 POST /api/auth/register
+Auth: No
+Body:
+{
+  "username": "string, required, min 3",
+  "email": "string email, required",
+  "password": "string, required, min 6",
+  "fullName": "string, optional",
+  "phoneNumber": "string, optional"
+}
+Success 201:
+{
+  "user": {
+    "id": "number",
+    "neonAuthId": "string|null",
+    "username": "string",
+    "email": "string",
+    "fullName": "string|null",
+    "phoneNumber": "string|null",
+    "role": "string",
+    "createdAt": "ISO datetime|null"
+  },
+  "access_token": "string"
+}
+Errors: 409, 400
+
+1.2 POST /api/auth/login
+Auth: No
+Body:
+{
+  "usernameOrEmail": "string",
+  "password": "string"
+}
+Success 200:
+{
+  "user": {
+    "id": "number",
+    "neonAuthId": "string|null",
+    "username": "string",
+    "email": "string",
+    "fullName": "string|null",
+    "phoneNumber": "string|null",
+    "role": "string",
+    "createdAt": "ISO datetime|null"
+  },
+  "access_token": "string"
+}
+Errors: 401, 400
+
+1.3 GET /api/auth/google
+Auth: No
+Success: HTTP redirect (302), not JSON body for app usage
+
+1.4 GET /api/auth/me
+Auth: Bearer JWT
+Success 200:
+{
+  "id": "number",
+  "username": "string",
+  "email": "string",
+  "role": "string",
+  "fullName": "string|null",
+  "phoneNumber": "string|null",
+  "createdAt": "ISO datetime|null"
+}
+Errors: 401
+
+1.5 GET /api/auth/google/callback
+Auth: Google OAuth callback
+Success: HTTP redirect (302) to frontend URL with query param token
+
+--------------------------------------------------------------------
+2) Apartments (base: /api/apartments)
+--------------------------------------------------------------------
+
+2.1 GET /api/apartments/my
+Auth: Bearer JWT
+Success 200:
+{
+  "id": "number",
+  "unitNumber": "string",
+  "floor": "number|null",
+  "block": "string|null",
+  "areaSqm": "string|null",
+  "owner": {
+    "id": "number|null",
+    "fullName": "string|null",
+    "email": "string|null"
+  }
+}
+Errors: 401, 404
+
+--------------------------------------------------------------------
+3) Bills (base: /api/bills)
+--------------------------------------------------------------------
+
+3.1 GET /api/bills
+Auth: Bearer JWT
+Query: status, limit, offset, sortBy, sortOrder, dueDateFrom, dueDateTo
+Success 200:
+{
+  "data": [
+    {
+      "id": "number",
+      "title": "string",
+      "amount": "string",
+      "period": "YYYY-MM-DD",
+      "dueDate": "YYYY-MM-DD",
+      "status": "pending|paid|overdue|string",
+      "createdAt": "ISO datetime|null",
+      "paidAt": "ISO datetime|null"
+    }
+  ],
+  "total": "number",
+  "page": "number"
+}
+
+3.2 GET /api/bills/upcoming
+Auth: Bearer JWT
+Success 200:
+{
+  "data": [
+    {
+      "id": "number",
+      "title": "string",
+      "amount": "string",
+      "dueDate": "YYYY-MM-DD",
+      "status": "string"
+    }
+  ]
+}
+
+3.3 GET /api/bills/:id
+Auth: Bearer JWT
+Success 200:
+{
+  "id": "number",
+  "title": "string",
+  "amount": "string",
+  "period": "YYYY-MM-DD",
+  "dueDate": "YYYY-MM-DD",
+  "status": "string",
+  "createdAt": "ISO datetime|null",
+  "paidAt": "ISO datetime|null",
+  "apartment": {
+    "unitNumber": "string|null",
+    "floor": "number|null",
+    "block": "string|null"
+  },
+  "items": [
+    {
+      "id": "number",
+      "title": "string",
+      "usage": "string|null",
+      "unitPrice": "string|null",
+      "measureUnit": "string|null",
+      "amount": "string",
+      "feeType": {
+        "id": "number|null",
+        "name": "string|null"
+      }
+    }
+  ]
+}
+Errors: 401, 403, 404
+
+3.4 PATCH /api/bills/:id/mark-paid
+Auth: Bearer JWT
+Body:
+{
+  "paymentMethod": "string, required",
+  "transactionRef": "string, optional",
+  "notes": "string, optional"
+}
+Success 200:
+{
+  "message": "Bill marked as paid",
+  "bill": {
+    "id": "number",
+    "status": "paid",
+    "paidAt": "ISO datetime"
+  },
+  "transaction": {
+    "id": "number",
+    "amount": "string",
+    "method": "string"
+  }
+}
+Errors: 401, 403, 404
+
+--------------------------------------------------------------------
+4) Bookings (base: /api/bookings)
+--------------------------------------------------------------------
+
+4.1 POST /api/bookings
+Auth: Bearer JWT
+Body:
+{
+  "serviceType": "parking|bbq",
+  "slotNumber": "string",
+  "date": "YYYY-MM-DD",
+  "endDate": "YYYY-MM-DD, optional",
+  "startTime": "HH:mm",
+  "endTime": "HH:mm",
+  "notes": "string, optional"
+}
+Success 201 (full booking row):
+{
+  "id": "number",
+  "userId": "number",
+  "serviceType": "string",
+  "slotNumber": "string|null",
+  "date": "YYYY-MM-DD",
+  "endDate": "YYYY-MM-DD|null",
+  "startTime": "HH:mm:ss or HH:mm",
+  "endTime": "HH:mm:ss or HH:mm",
+  "status": "confirmed|string",
+  "notes": "string|null",
+  "createdAt": "ISO datetime|null"
+}
+Errors: 400, 401
+
+4.2 GET /api/bookings/me
+Auth: Bearer JWT
+Success 200:
+[
+  {
+    "id": "number",
+    "userId": "number",
+    "serviceType": "string",
+    "slotNumber": "string|null",
+    "date": "YYYY-MM-DD",
+    "endDate": "YYYY-MM-DD|null",
+    "startTime": "time string",
+    "endTime": "time string",
+    "status": "string",
+    "notes": "string|null",
+    "createdAt": "ISO datetime|null"
+  }
+]
+
+4.3 GET /api/bookings
+Auth: Bearer JWT
+Query:
+- date: string required
+- serviceType: string required
+Success 200: booking array with same item shape as 4.2
+
+--------------------------------------------------------------------
+5) Fee Types (base: /api/fee-types)
+--------------------------------------------------------------------
+
+5.1 GET /api/fee-types
+Auth: Bearer JWT
+Success 200:
+[
+  {
+    "id": "number",
+    "name": "string",
+    "description": "string|null",
+    "unitPrice": "string|null",
+    "measureUnit": "string|null",
+    "isRecurring": "boolean|null"
+  }
+]
+
+5.2 GET /api/fee-types/:id
+Auth: Bearer JWT
+Success 200: one fee type object (same shape as 5.1 item)
+Errors: 401, 404
+
+5.3 POST /api/fee-types
+Auth: Bearer JWT (manager)
+Body:
+{
+  "name": "string",
+  "description": "string, optional",
+  "unitPrice": "string",
+  "measureUnit": "string, optional",
+  "isRecurring": "boolean, optional"
+}
+Success 201: created fee type object
+Errors: 400, 401, 403
+
+5.4 PATCH /api/fee-types/:id
+Auth: Bearer JWT (manager)
+Body: partial of POST fields
+Success 200: updated fee type object
+Errors: 400, 401, 403, 404
+
+5.5 DELETE /api/fee-types/:id
+Auth: Bearer JWT (manager)
+Success 200:
+{
+  "message": "string"
+}
+Errors: 401, 403, 404, 409
+
+--------------------------------------------------------------------
+6) Notifications (base: /api/notifications)
+--------------------------------------------------------------------
+
+6.1 GET /api/notifications
+Auth: Bearer JWT
+Query: limit?, offset?
+Success 200:
+{
+  "data": [
+    {
+      "id": "number",
+      "userId": "number|null",
+      "title": "string",
+      "content": "string",
+      "type": "string|null",
+      "isRead": "boolean|null",
+      "relatedBillId": "number|null",
+      "createdAt": "ISO datetime|null"
+    }
+  ],
+  "total": "number",
+  "unread": "number"
+}
+
+6.2 PATCH /api/notifications/:id/read
+Auth: Bearer JWT
+Success 200:
+{
+  "message": "Notification marked as read",
+  "notification": {
+    "id": "number",
+    "userId": "number|null",
+    "title": "string",
+    "content": "string",
+    "type": "string|null",
+    "isRead": true,
+    "relatedBillId": "number|null",
+    "createdAt": "ISO datetime|null"
+  }
+}
+Errors: 401, 404
+
+--------------------------------------------------------------------
+7) Payments (base: /api/payments)
+--------------------------------------------------------------------
+
+7.1 POST /api/payments/create-link
+Auth: Bearer JWT
+Body:
+{
+  "billId": "number, required",
+  "testAmount": "number >= 10000, optional",
+  "returnUrl": "string URL, optional",
+  "cancelUrl": "string URL, optional"
+}
+Success 201:
+{
+  "checkoutUrl": "string"
+}
+Errors: 400, 401, 403, 404
+
+7.2 POST /api/payments/webhook
+Auth: No
+Body: raw payload from PayOS
+Success 200:
+{
+  "success": true
+}
+Errors: 400 (invalid signature)
+
+--------------------------------------------------------------------
+8) Stats (base: /api/stats)
+--------------------------------------------------------------------
+
+8.1 GET /api/stats
+Auth: Bearer JWT
+Query:
+- type: overview | revenue | activity (required)
+- period: this-month | last-month | 3-months | 6-months | year (optional, for revenue)
+
+Success 200 when type=overview:
+{
+  "totalDue": "number",
+  "pendingCount": "number",
+  "overdueCount": "number",
+  "paidThisMonth": "number",
+  "paidThisMonthCount": "number",
+  "totalResidents": "number",
+  "totalApartments": "number"
+}
+
+Success 200 when type=revenue:
+{
+  "months": [
+    {
+      "month": "YYYY-MM",
+      "total": "number",
+      "count": "number"
+    }
+  ]
+}
+
+Success 200 when type=activity:
+{
+  "recentTransactions": [
+    {
+      "id": "number",
+      "billTitle": "string|null",
+      "amount": "string",
+      "paymentDate": "ISO datetime|null",
+      "paymentMethod": "string|null",
+      "transactionRef": "string|null"
+    }
+  ],
+  "recentBills": [
+    {
+      "id": "number",
+      "title": "string",
+      "amount": "string",
+      "dueDate": "YYYY-MM-DD",
+      "status": "string|null",
+      "createdAt": "ISO datetime|null"
+    }
+  ]
+}
+Errors: 401, 400
+
+--------------------------------------------------------------------
+9) Transactions (base: /api/transactions)
+--------------------------------------------------------------------
+
+9.1 GET /api/transactions
+Auth: Bearer JWT
+Query: limit?, offset?
+Success 200:
+{
+  "data": [
+    {
+      "id": "number",
+      "billTitle": "string|null",
+      "amount": "string",
+      "paymentDate": "ISO datetime|null",
+      "paymentMethod": "string|null",
+      "transactionRef": "string|null",
+      "notes": "string|null"
+    }
+  ],
+  "total": "number"
+}
+
+9.2 GET /api/transactions/by-month/:month
+Auth: Bearer JWT
+Path param: month (YYYY-MM)
+Success 200:
+{
+  "data": [
+    {
+      "id": "number",
+      "billTitle": "string|null",
+      "amount": "string",
+      "paymentDate": "ISO datetime|null",
+      "paymentMethod": "string|null",
+      "transactionRef": "string|null"
+    }
+  ],
+  "month": "YYYY-MM"
+}
+
+====================================================================
+C) Missing endpoints from your mobile task (not found in this backend)
+====================================================================
+- GET /api/announcements/active
+- GET /api/facilities
+- DELETE /api/bookings/:id
+- POST /api/maintenance-requests
+- GET /api/bills/my-bills (closest current endpoint: GET /api/bills)
+- POST /api/payment/create-url (current endpoint: POST /api/payments/create-link)
+
+====================================================================
+D) Frontend integration recommendation
+====================================================================
+For each API call, map by endpoint key, for example:
+- login -> expects { user, access_token }
+- bills.list -> expects { data, total, page }
+- stats.overview -> expects overview object
+
+And handle errors with one parser:
+- statusCode = response.statusCode
+- message = Array.isArray(response.message) ? response.message.join(", ") : response.message
+- error = response.error

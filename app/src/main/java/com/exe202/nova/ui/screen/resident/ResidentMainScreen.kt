@@ -26,24 +26,15 @@ import com.exe202.nova.ui.navigation.BillDetailRoute
 import com.exe202.nova.ui.navigation.BillsRoute
 import com.exe202.nova.ui.navigation.BookingRoute
 import com.exe202.nova.ui.navigation.DashboardRoute
+import com.exe202.nova.ui.navigation.MapRoute
 import com.exe202.nova.ui.navigation.MyBookingsRoute
 import com.exe202.nova.ui.navigation.NotificationsRoute
 import com.exe202.nova.ui.navigation.ProfileRoute
 import com.exe202.nova.ui.navigation.SettingsRoute
 import com.exe202.nova.ui.navigation.TransactionHistoryRoute
-import com.exe202.nova.ui.navigation.FacilitiesRoute
 import com.exe202.nova.ui.navigation.MaintenanceRoute
+import com.exe202.nova.ui.navigation.ResidentChatRoute
 import kotlinx.coroutines.launch
-
-private fun screenTitle(route: Any?): String = when (route) {
-    is DashboardRoute -> "Tổng quan"
-    is BillsRoute -> "Hóa đơn"
-    is BookingRoute -> "Đặt chỗ"
-    is NotificationsRoute -> "Thông báo"
-    is ProfileRoute -> "Tài khoản"
-    is TransactionHistoryRoute -> "Lịch sử giao dịch"
-    else -> "Nova"
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,13 +50,14 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
         currentDestination?.hasRoute(BillsRoute::class) == true -> "Hóa đơn"
         currentDestination?.hasRoute(BillDetailRoute::class) == true -> "Chi tiết hóa đơn"
         currentDestination?.hasRoute(BookingRoute::class) == true -> "Đặt chỗ"
-        currentDestination?.hasRoute(MyBookingsRoute::class) == true -> "Đặt chỗ của tôi"
+        currentDestination?.hasRoute(MyBookingsRoute::class) == true -> "Lịch sử đặt chỗ"
         currentDestination?.hasRoute(NotificationsRoute::class) == true -> "Thông báo"
         currentDestination?.hasRoute(ProfileRoute::class) == true -> "Tài khoản"
         currentDestination?.hasRoute(TransactionHistoryRoute::class) == true -> "Lịch sử giao dịch"
         currentDestination?.hasRoute(SettingsRoute::class) == true -> "Cài đặt"
-        currentDestination?.hasRoute(FacilitiesRoute::class) == true -> "Tiện ích"
         currentDestination?.hasRoute(MaintenanceRoute::class) == true -> "Yêu cầu sửa chữa"
+        currentDestination?.hasRoute(MapRoute::class) == true -> "Bản đồ"
+        currentDestination?.hasRoute(ResidentChatRoute::class) == true -> "Chat"
         else -> "Nova"
     }
 
@@ -74,12 +66,22 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
         drawerState = drawerState,
         currentDestination = currentDestination,
         onNavigateTo = { route ->
-            nestedNavController.navigate(route) {
-                popUpTo(nestedNavController.graph.findStartDestination().id) {
-                    saveState = true
+            if (route == DashboardRoute) {
+                nestedNavController.navigate(DashboardRoute) {
+                    popUpTo(nestedNavController.graph.findStartDestination().id) {
+                        inclusive = false
+                    }
+                    launchSingleTop = true
+                    restoreState = false
                 }
-                launchSingleTop = true
-                restoreState = true
+            } else {
+                nestedNavController.navigate(route) {
+                    popUpTo(nestedNavController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
             }
         },
     ) {
@@ -145,12 +147,15 @@ fun ResidentMainScreen(onLogout: () -> Unit) {
                         onLogout = onLogout
                     )
                 }
-                composable<FacilitiesRoute> {
-                    FacilitiesScreen(onNavigateToBooking = { nestedNavController.navigate(BookingRoute) })
-                }
                 composable<MaintenanceRoute> {
                     MaintenanceRequestScreen()
                 }
+                composable<ResidentChatRoute> {
+                    ResidentChatScreen()
+                }
+//                composable<MapRoute> {
+//                    MapScreen()
+//                }
             }
         }
     }

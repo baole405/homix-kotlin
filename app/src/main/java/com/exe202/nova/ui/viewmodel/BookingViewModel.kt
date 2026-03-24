@@ -43,6 +43,7 @@ data class BbqBookingState(
     val endTime: String = "10:00",
     val participants: String = "",
     val notes: String = "",
+    val bookedSlotIds: Set<String> = emptySet(),
     val isSubmitting: Boolean = false,
     val submitSuccess: Boolean = false,
     val error: String? = null
@@ -55,6 +56,7 @@ data class ParkingBookingState(
     val endDate: LocalDate = LocalDate.now().plusMonths(1),
     val vehicleFilter: VehicleType? = null,
     val selectedSlotIds: Set<String> = emptySet(),
+    val bookedSlotIds: Set<String> = emptySet(),
     val notes: String = "",
     val isSubmitting: Boolean = false,
     val submitSuccess: Boolean = false,
@@ -66,7 +68,18 @@ data class BookingUiState(
     val pool: PoolBookingState = PoolBookingState(),
     val bbq: BbqBookingState = BbqBookingState(),
     val parking: ParkingBookingState = ParkingBookingState(),
+    val bookedSlots: BookedSlotsState = BookedSlotsState(),
+    val navigateToHistory: Boolean = false,
     val isLoading: Boolean = true
+)
+
+data class BookedSlotsState(
+    val isLoading: Boolean = false,
+    val showDialog: Boolean = false,
+    val bookings: List<Booking> = emptyList(),
+    val selectedDate: String = "",
+    val serviceTypeLabel: String = "",
+    val error: String? = null
 )
 
 @HiltViewModel
@@ -96,9 +109,58 @@ class BookingViewModel @Inject constructor(
                 parking = it.parking.copy(slots = parking)
             )
         }
+        refreshBookedSlots()
     }
 
-    fun selectTab(index: Int) = _uiState.update { it.copy(selectedTab = index) }
+    fun selectTab(index: Int) {
+        _uiState.update { it.copy(selectedTab = index) }
+        refreshBookedSlotsForTab(index)
+    }
+
+    fun loadBookedSlotsForSelectedTab() {
+        val serviceType = serviceTypeForTab(_uiState.value.selectedTab)
+        val date = selectedDateForTab(_uiState.value.selectedTab).toString()
+        _uiState.update {
+            it.copy(
+                bookedSlots = it.bookedSlots.copy(
+                    isLoading = true,
+                    showDialog = true,
+                    bookings = emptyList(),
+                    selectedDate = date,
+                    serviceTypeLabel = serviceTypeLabelForTab(it.selectedTab),
+                    error = null
+                )
+            )
+        }
+
+        viewModelScope.launch {
+            try {
+                val bookings = bookingRepository.getBookingsByDate(date, serviceType)
+                _uiState.update {
+                    it.copy(bookedSlots = it.bookedSlots.copy(isLoading = false, bookings = bookings))
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(bookedSlots = it.bookedSlots.copy(isLoading = false, error = e.message))
+                }
+            }
+        }
+    }
+
+    fun dismissBookedSlotsDialog() {
+        _uiState.update { it.copy(bookedSlots = it.bookedSlots.copy(showDialog = false)) }
+    }
+
+    fun consumeNavigateToHistory() {
+        _uiState.update {
+            it.copy(
+                navigateToHistory = false,
+                pool = it.pool.copy(submitSuccess = false),
+                bbq = it.bbq.copy(submitSuccess = false),
+                parking = it.parking.copy(submitSuccess = false)
+            )
+        }
+    }
 
     // --- Pool ---
     fun selectPoolDate(date: LocalDate) {
@@ -152,18 +214,20 @@ class BookingViewModel @Inject constructor(
                 bookingRepository.createBooking(
                     CreateBookingRequest(
                         serviceType = "swimming_pool",
+                        slotNumber = state.pool?.id,
                         date = state.selectedDate.toString(),
+                        endDate = null,
                         startTime = slot.startTime,
                         endTime = slot.endTime,
-                        slotNumber = state.pool?.id,
-                        slotNumbers = null,
-                        endDate = null,
-                        notes = state.notes.ifBlank { null },
-                        price = state.pool?.pricePerHour?.times(2),
-                        numberOfParticipants = state.participants.toIntOrNull()
+                        notes = state.notes.ifBlank { null }
                     )
                 )
-                _uiState.update { s -> s.copy(pool = s.pool.copy(isSubmitting = false, submitSuccess = true)) }
+                _uiState.update {
+                    it.copy(
+                        pool = it.pool.copy(isSubmitting = false, submitSuccess = true),
+                        navigateToHistory = true
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update { s -> s.copy(pool = s.pool.copy(isSubmitting = false, error = e.message)) }
             }
@@ -172,7 +236,10 @@ class BookingViewModel @Inject constructor(
 
     // --- BBQ ---
     fun expandBbqSlot(id: String?) = _uiState.update { s -> s.copy(bbq = s.bbq.copy(expandedSlotId = id)) }
-    fun selectBbqDate(date: LocalDate) = _uiState.update { s -> s.copy(bbq = s.bbq.copy(selectedDate = date)) }
+    fun selectBbqDate(date: LocalDate) {
+        _uiState.update { s -> s.copy(bbq = s.bbq.copy(selectedDate = date)) }
+        refreshBookedBbqSlots()
+    }
     fun updateBbqStartTime(v: String) = _uiState.update { s -> s.copy(bbq = s.bbq.copy(startTime = v)) }
     fun updateBbqEndTime(v: String) = _uiState.update { s -> s.copy(bbq = s.bbq.copy(endTime = v)) }
     fun updateBbqParticipants(v: String) = _uiState.update { s -> s.copy(bbq = s.bbq.copy(participants = v)) }
@@ -187,18 +254,20 @@ class BookingViewModel @Inject constructor(
                 bookingRepository.createBooking(
                     CreateBookingRequest(
                         serviceType = "bbq",
+                        slotNumber = slotId,
                         date = state.selectedDate.toString(),
+                        endDate = null,
                         startTime = state.startTime,
                         endTime = state.endTime,
-                        slotNumber = slotId,
-                        slotNumbers = null,
-                        endDate = null,
-                        notes = state.notes.ifBlank { null },
-                        price = null,
-                        numberOfParticipants = state.participants.toIntOrNull()
+                        notes = state.notes.ifBlank { null }
                     )
                 )
-                _uiState.update { s -> s.copy(bbq = s.bbq.copy(isSubmitting = false, submitSuccess = true, expandedSlotId = null)) }
+                _uiState.update {
+                    it.copy(
+                        bbq = it.bbq.copy(isSubmitting = false, submitSuccess = true, expandedSlotId = null),
+                        navigateToHistory = true
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update { s -> s.copy(bbq = s.bbq.copy(isSubmitting = false, error = e.message)) }
             }
@@ -207,13 +276,17 @@ class BookingViewModel @Inject constructor(
 
     // --- Parking ---
     fun toggleParkingMode(isMonthly: Boolean) = _uiState.update { s -> s.copy(parking = s.parking.copy(isMonthly = isMonthly, selectedSlotIds = emptySet())) }
-    fun selectParkingDate(date: LocalDate) = _uiState.update { s -> s.copy(parking = s.parking.copy(selectedDate = date)) }
+    fun selectParkingDate(date: LocalDate) {
+        _uiState.update { s -> s.copy(parking = s.parking.copy(selectedDate = date)) }
+        refreshBookedParkingSlots()
+    }
     fun selectParkingEndDate(date: LocalDate) = _uiState.update { s -> s.copy(parking = s.parking.copy(endDate = date)) }
     fun setParkingVehicleFilter(type: VehicleType?) = _uiState.update { s -> s.copy(parking = s.parking.copy(vehicleFilter = type, selectedSlotIds = emptySet())) }
     fun updateParkingNotes(v: String) = _uiState.update { s -> s.copy(parking = s.parking.copy(notes = v)) }
 
     fun toggleParkingSlot(id: String) {
         _uiState.update { s ->
+            if (id in s.parking.bookedSlotIds) return@update s
             val current = s.parking.selectedSlotIds.toMutableSet()
             if (id in current) current.remove(id) else current.add(id)
             s.copy(parking = s.parking.copy(selectedSlotIds = current))
@@ -234,23 +307,101 @@ class BookingViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { s -> s.copy(parking = s.parking.copy(isSubmitting = true, error = null)) }
             try {
-                bookingRepository.createBooking(
-                    CreateBookingRequest(
-                        serviceType = "parking",
-                        date = state.selectedDate.toString(),
-                        startTime = "00:00",
-                        endTime = "23:59",
-                        slotNumber = null,
-                        slotNumbers = state.selectedSlotIds.toList(),
-                        endDate = if (state.isMonthly) state.endDate.toString() else null,
-                        notes = state.notes.ifBlank { null },
-                        price = null,
-                        numberOfParticipants = null
+                state.selectedSlotIds.forEach { slotId ->
+                    bookingRepository.createBooking(
+                        CreateBookingRequest(
+                            serviceType = "parking",
+                            slotNumber = slotId,
+                            date = state.selectedDate.toString(),
+                            endDate = if (state.isMonthly) state.endDate.toString() else null,
+                            startTime = "00:00",
+                            endTime = "23:59",
+                            notes = state.notes.ifBlank { null }
+                        )
                     )
-                )
-                _uiState.update { s -> s.copy(parking = s.parking.copy(isSubmitting = false, submitSuccess = true, selectedSlotIds = emptySet())) }
+                }
+                _uiState.update {
+                    it.copy(
+                        parking = it.parking.copy(
+                            isSubmitting = false,
+                            submitSuccess = true,
+                            selectedSlotIds = emptySet()
+                        ),
+                        navigateToHistory = true
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.update { s -> s.copy(parking = s.parking.copy(isSubmitting = false, error = e.message)) }
+            }
+        }
+    }
+
+    private fun selectedDateForTab(tab: Int): LocalDate = when (tab) {
+        0 -> _uiState.value.pool.selectedDate
+        1 -> _uiState.value.bbq.selectedDate
+        else -> _uiState.value.parking.selectedDate
+    }
+
+    private fun serviceTypeForTab(tab: Int): String = when (tab) {
+        0 -> "swimming_pool"
+        1 -> "bbq"
+        else -> "parking"
+    }
+
+    private fun serviceTypeLabelForTab(tab: Int): String = when (tab) {
+        0 -> "Bể bơi"
+        1 -> "BBQ"
+        else -> "Bãi xe"
+    }
+
+    private fun refreshBookedSlots() {
+        refreshBookedBbqSlots()
+        refreshBookedParkingSlots()
+    }
+
+    private fun refreshBookedSlotsForTab(tab: Int) {
+        when (tab) {
+            1 -> refreshBookedBbqSlots()
+            2 -> refreshBookedParkingSlots()
+        }
+    }
+
+    private fun refreshBookedBbqSlots() {
+        val date = _uiState.value.bbq.selectedDate.toString()
+        viewModelScope.launch {
+            try {
+                val booked = bookingRepository.getBookingsByDate(date, "bbq")
+                val bookedIds = booked.mapNotNull { it.slotNumber }.toSet()
+                _uiState.update {
+                    it.copy(
+                        bbq = it.bbq.copy(
+                            bookedSlotIds = bookedIds,
+                            expandedSlotId = it.bbq.expandedSlotId?.takeUnless { id -> id in bookedIds }
+                        )
+                    )
+                }
+            } catch (_: Exception) {
+                // Ignore prefetch errors; form submit will still show backend errors.
+            }
+        }
+    }
+
+    private fun refreshBookedParkingSlots() {
+        val date = _uiState.value.parking.selectedDate.toString()
+        viewModelScope.launch {
+            try {
+                val booked = bookingRepository.getBookingsByDate(date, "parking")
+                val bookedIds = booked.mapNotNull { it.slotNumber }.toSet()
+                _uiState.update {
+                    it.copy(
+                        parking = it.parking.copy(
+                            bookedSlotIds = bookedIds,
+                            selectedSlotIds = it.parking.selectedSlotIds - bookedIds
+                        )
+                    )
+                }
+            } catch (_: Exception) {
+                // Ignore prefetch errors; form submit will still show backend errors.
             }
         }
     }

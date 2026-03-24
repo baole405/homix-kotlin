@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class BookingStatusFilter { ALL, PENDING, CONFIRMED, REJECTED, CANCELLED }
+enum class BookingStatusFilter { ALL, PENDING, CONFIRMED, REJECTED }
 
 data class MyBookingsUiState(
     val allBookings: List<Booking> = emptyList(),
@@ -53,26 +53,13 @@ class MyBookingsViewModel @Inject constructor(
             try {
                 val bookings = bookingRepository.getMyBookings()
                 _uiState.update { it.copy(allBookings = bookings, isRefreshing = false, error = null) }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uiState.update { it.copy(isRefreshing = false) }
             }
         }
     }
 
     fun selectFilter(filter: BookingStatusFilter) = _uiState.update { it.copy(selectedFilter = filter) }
-
-    fun cancelBooking(id: Int) {
-        _uiState.update { state ->
-            state.copy(
-                cancellingId = id,
-                allBookings = state.allBookings.map { booking ->
-                    if (booking.id == id) booking.copy(status = BookingStatus.CANCELLED)
-                    else booking
-                }
-            )
-        }
-        _uiState.update { it.copy(cancellingId = null) }
-    }
 
     fun filteredBookings(): List<Booking> {
         val state = _uiState.value
@@ -81,7 +68,6 @@ class MyBookingsViewModel @Inject constructor(
             BookingStatusFilter.PENDING -> state.allBookings.filter { it.status == BookingStatus.PENDING }
             BookingStatusFilter.CONFIRMED -> state.allBookings.filter { it.status == BookingStatus.CONFIRMED }
             BookingStatusFilter.REJECTED -> state.allBookings.filter { it.status == BookingStatus.REJECTED }
-            BookingStatusFilter.CANCELLED -> state.allBookings.filter { it.status == BookingStatus.CANCELLED }
         }
     }
 }

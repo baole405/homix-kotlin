@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -22,13 +21,14 @@ import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.HistoryEdu
 import androidx.compose.material.icons.outlined.LightMode
-import androidx.compose.material.icons.outlined.MeetingRoom
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Payments
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material.icons.outlined.Pool
 import androidx.compose.material.icons.outlined.Receipt
+import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,15 +56,18 @@ import com.exe202.nova.ui.navigation.ManagerAnnouncementsRoute
 import com.exe202.nova.ui.navigation.ManagerApartmentsRoute
 import com.exe202.nova.ui.navigation.ManagerBillingRoute
 import com.exe202.nova.ui.navigation.ManagerBookingsRoute
+import com.exe202.nova.ui.navigation.ManagerChatRoute
 import com.exe202.nova.ui.navigation.ManagerCustomersRoute
 import com.exe202.nova.ui.navigation.ManagerDashboardRoute
 import com.exe202.nova.ui.navigation.ManagerFacilitiesRoute
 import com.exe202.nova.ui.navigation.ManagerFeeTypesRoute
 import com.exe202.nova.ui.navigation.ManagerReportsRoute
+import com.exe202.nova.ui.navigation.MapRoute
+import com.exe202.nova.ui.navigation.MyBookingsRoute
 import com.exe202.nova.ui.navigation.NotificationsRoute
 import com.exe202.nova.ui.navigation.ProfileRoute
+import com.exe202.nova.ui.navigation.ResidentChatRoute
 import com.exe202.nova.ui.navigation.TransactionHistoryRoute
-import com.exe202.nova.ui.navigation.FacilitiesRoute
 import com.exe202.nova.ui.navigation.MaintenanceRoute
 import androidx.compose.material.icons.outlined.Build
 import com.exe202.nova.ui.theme.LocalIsDarkTheme
@@ -80,12 +83,14 @@ private data class DrawerItem(
 
 private val residentItems = listOf(
     DrawerItem(DashboardRoute, "Tổng quan", Icons.Outlined.Home),
+    DrawerItem(MyBookingsRoute, "Lịch sử đặt chỗ", Icons.Outlined.HistoryEdu),
+    DrawerItem(TransactionHistoryRoute, "Lịch sử giao dịch", Icons.Outlined.HistoryEdu),
     null, // divider
     DrawerItem(BillsRoute, "Hóa đơn", Icons.Outlined.Receipt),
     DrawerItem(BookingRoute, "Đặt chỗ", Icons.Outlined.CalendarMonth),
-    DrawerItem(FacilitiesRoute, "Tiện ích", Icons.Outlined.Pool),
-    DrawerItem(TransactionHistoryRoute, "Lịch sử giao dịch", Icons.Outlined.HistoryEdu),
     DrawerItem(MaintenanceRoute, "Yêu cầu sửa chữa", Icons.Outlined.Build),
+    DrawerItem(MapRoute, "Bản đồ", Icons.Outlined.Place),
+    DrawerItem(ResidentChatRoute, "Chat", Icons.Outlined.Chat),
     null, // divider
     DrawerItem(NotificationsRoute, "Thông báo", Icons.Outlined.Notifications),
     DrawerItem(ProfileRoute, "Tài khoản", Icons.Outlined.Person),
@@ -97,6 +102,7 @@ private val managerItems = listOf(
     DrawerItem(ManagerBookingsRoute, "Quản lý Booking", Icons.Outlined.CalendarMonth),
     DrawerItem(ManagerBillingRoute, "Quản lý Hóa đơn", Icons.Outlined.Receipt),
     DrawerItem(ManagerCustomersRoute, "Quản lý Cư dân", Icons.Outlined.People),
+    DrawerItem(ManagerChatRoute, "Chat", Icons.Outlined.Chat),
     null, // divider
     DrawerItem(ManagerApartmentsRoute, "Quản lý Căn hộ", Icons.Outlined.Apartment),
     DrawerItem(ManagerFacilitiesRoute, "Quản lý Tiện ích", Icons.Outlined.Pool),

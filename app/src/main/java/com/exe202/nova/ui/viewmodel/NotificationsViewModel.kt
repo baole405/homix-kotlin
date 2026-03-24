@@ -80,7 +80,9 @@ class NotificationsViewModel @Inject constructor(
                         unreadCount = updated.count { !it.isRead }
                     )
                 }
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message ?: "Lỗi cập nhật thông báo") }
+            }
         }
     }
 

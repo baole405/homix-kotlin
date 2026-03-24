@@ -10,14 +10,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -29,17 +31,18 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.exe202.nova.data.model.BookingStatus
 import com.exe202.nova.data.model.SlotStatus
 import com.exe202.nova.data.model.VehicleType
 import com.exe202.nova.ui.component.LoadingScreen
 import com.exe202.nova.ui.viewmodel.BookingViewModel
-import com.exe202.nova.ui.viewmodel.TimeSlot
 import com.exe202.nova.util.toVndFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,12 +53,19 @@ fun BookingScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(uiState.navigateToHistory) {
+        if (uiState.navigateToHistory) {
+            viewModel.consumeNavigateToHistory()
+            onNavigateToMyBookings()
+        }
+    }
+
     if (uiState.isLoading) {
         LoadingScreen()
         return
     }
 
-    val tabs = listOf("Bể bơi", "BBQ", "Bãi xe")
+    val tabs = listOf("BBQ", "Bãi xe", "Bể bơi")
 
     Column(modifier = Modifier.fillMaxSize()) {
         TabRow(selectedTabIndex = uiState.selectedTab) {
@@ -68,89 +78,99 @@ fun BookingScreen(
             }
         }
 
-        when (uiState.selectedTab) {
-            0 -> PoolTab(viewModel = viewModel)
-            1 -> BbqTab(viewModel = viewModel)
-            2 -> ParkingTab(viewModel = viewModel)
-        }
-
-        TextButton(
-            onClick = onNavigateToMyBookings,
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text("Xem lịch sử đặt chỗ của tôi")
+            OutlinedButton(onClick = viewModel::loadBookedSlotsForSelectedTab) {
+                Text("Các slot đã được đặt")
+            }
         }
+
+        when (uiState.selectedTab) {
+            0 -> BbqTab(viewModel = viewModel)
+            1 -> ParkingTab(viewModel = viewModel)
+            2 -> PoolTab()
+        }
+    }
+
+    if (uiState.bookedSlots.showDialog) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissBookedSlotsDialog,
+            title = { Text("Các slot đã được đặt") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        "${uiState.bookedSlots.serviceTypeLabel} - ${uiState.bookedSlots.selectedDate}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    if (uiState.bookedSlots.isLoading) {
+                        CircularProgressIndicator()
+                    } else if (uiState.bookedSlots.error != null) {
+                        Text(
+                            uiState.bookedSlots.error ?: "",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    } else if (uiState.bookedSlots.bookings.isEmpty()) {
+                        Text("Chưa có slot nào được đặt")
+                    } else {
+                        LazyColumn(modifier = Modifier.heightIn(max = 280.dp)) {
+                            items(uiState.bookedSlots.bookings, key = { it.id }) { booking ->
+                                Column(modifier = Modifier.padding(vertical = 6.dp)) {
+                                    Text(
+                                        "Slot: ${booking.slotNumber ?: "-"}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                    Text(
+                                        "Giờ: ${booking.startTime} - ${booking.endTime}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        "Trạng thái: ${bookingStatusLabel(booking.status)}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = viewModel::dismissBookedSlotsDialog) {
+                    Text("Đóng")
+                }
+            }
+        )
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun PoolTab(viewModel: BookingViewModel) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val pool = uiState.pool
+private fun bookingStatusLabel(status: BookingStatus): String = when (status) {
+    BookingStatus.PENDING -> "Chờ duyệt"
+    BookingStatus.CONFIRMED -> "Đã xác nhận"
+    BookingStatus.REJECTED -> "Bị từ chối"
+    BookingStatus.CANCELLED -> "Đã hủy"
+}
 
+@Composable
+private fun PoolTab() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        pool.pool?.let { p ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text(p.name, style = MaterialTheme.typography.titleMedium)
-                    Text(p.location, style = MaterialTheme.typography.bodySmall)
-                    Text("Sức chứa: ${p.capacity} người | Giờ mở cửa: ${p.openTime} - ${p.closeTime}", style = MaterialTheme.typography.bodySmall)
-                    Text("Giá: ${p.pricePerHour.toVndFormat()}/giờ", style = MaterialTheme.typography.bodySmall)
-                }
-            }
-        }
-
-        Text("Chọn khung giờ:", style = MaterialTheme.typography.titleSmall)
-        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            pool.timeSlots.forEach { slot ->
-                FilterChip(
-                    selected = pool.selectedSlot == slot,
-                    onClick = { if (!slot.isBooked) viewModel.selectTimeSlot(slot) },
-                    label = { Text("${slot.startTime}-${slot.endTime}") },
-                    enabled = !slot.isBooked
-                )
-            }
-        }
-
-        OutlinedTextField(
-            value = pool.participants,
-            onValueChange = viewModel::updatePoolParticipants,
-            label = { Text("Số người tham gia") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+        Text(
+            text = "Bể bơi đang bảo trì",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.error
         )
-        OutlinedTextField(
-            value = pool.notes,
-            onValueChange = viewModel::updatePoolNotes,
-            label = { Text("Ghi chú (tùy chọn)") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        pool.selectedSlot?.let { slot ->
-            val hours = 2
-            val price = (pool.pool?.pricePerHour ?: 0.0) * hours
-            Text("Tóm tắt: ${slot.startTime} - ${slot.endTime} | Tổng tiền: ${price.toVndFormat()}", style = MaterialTheme.typography.bodyMedium)
-        }
-
-        pool.error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
-        if (pool.submitSuccess) Text("Đặt chỗ thành công!", color = MaterialTheme.colorScheme.primary)
-
-        Button(
-            onClick = viewModel::submitPoolBooking,
-            enabled = pool.selectedSlot != null && pool.participants.isNotBlank() && !pool.isSubmitting,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(if (pool.isSubmitting) "Đang xử lý..." else "Đặt chỗ")
-        }
     }
 }
 
@@ -168,9 +188,11 @@ private fun BbqTab(viewModel: BookingViewModel) {
         items(bbq.slots, key = { it.id }) { slot ->
             val isExpanded = bbq.expandedSlotId == slot.id
             val isDisabled = slot.status == SlotStatus.MAINTENANCE
+            val isBooked = slot.id in bbq.bookedSlotIds
+            val isUnavailable = isDisabled || isBooked
 
             OutlinedCard(
-                onClick = { if (!isDisabled) viewModel.expandBbqSlot(if (isExpanded) null else slot.id) },
+                onClick = { if (!isUnavailable) viewModel.expandBbqSlot(if (isExpanded) null else slot.id) },
                 modifier = Modifier.fillMaxWidth(),
                 border = if (isExpanded) BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
                          else CardDefaults.outlinedCardBorder()
@@ -184,7 +206,10 @@ private fun BbqTab(viewModel: BookingViewModel) {
                             Text(slot.name, style = MaterialTheme.typography.titleSmall)
                             Text("Sức chứa: ${slot.capacity} người | ${slot.pricePerHour.toVndFormat()}/giờ", style = MaterialTheme.typography.bodySmall)
                         }
-                        if (isDisabled) Text("Bao tri", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
+                        when {
+                            isDisabled -> Text("Bảo trì", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
+                            isBooked -> Text("Đã được đặt", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelSmall)
+                        }
                     }
 
                     if (isExpanded) {
@@ -273,11 +298,12 @@ private fun ParkingTab(viewModel: BookingViewModel) {
             filtered.forEach { slot ->
                 val isSelected = slot.id in parking.selectedSlotIds
                 val isOccupied = slot.status == SlotStatus.OCCUPIED
+                val isBooked = slot.id in parking.bookedSlotIds
                 FilterChip(
                     selected = isSelected,
-                    onClick = { if (!isOccupied) viewModel.toggleParkingSlot(slot.id) },
+                    onClick = { if (!isOccupied && !isBooked) viewModel.toggleParkingSlot(slot.id) },
                     label = { Text("${slot.label}\n${slot.floor}") },
-                    enabled = !isOccupied
+                    enabled = !isOccupied && !isBooked
                 )
             }
         }

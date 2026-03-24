@@ -121,11 +121,16 @@ fun BillDetailScreen(
                 // Bill info
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     bill.apartment?.let { apt ->
-                        Text("Căn hộ: ${apt.unitNumber} - Tầng ${apt.floor} - ${apt.block}", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            "Căn hộ: ${apt.unitNumber ?: "-"} - Tầng ${apt.floor ?: "-"} - ${apt.block ?: "-"}",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
-                    Text("Kỳ: ${bill.period}", style = MaterialTheme.typography.bodyMedium)
+                    Text("Kỳ: ${bill.period ?: "-"}", style = MaterialTheme.typography.bodyMedium)
                     Text("Hạn thanh toán: ${bill.dueDate.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
-                    Text("Ngày tạo: ${bill.createdAt.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
+                    bill.createdAt?.let {
+                        Text("Ngày tạo: ${it.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
+                    }
                     bill.paidAt?.let {
                         Text("Ngày thanh toán: ${it.toDisplayDate()}", style = MaterialTheme.typography.bodyMedium)
                     }
@@ -162,7 +167,7 @@ fun BillDetailScreen(
                         enabled = !uiState.isCreatingPaymentLink,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(if (uiState.isCreatingPaymentLink) "Đang xử lý..." else "Thanh toan online (VNPay)")
+                        Text(if (uiState.isCreatingPaymentLink) "Đang xử lý..." else "Thanh toán online (PayOS)")
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedButton(

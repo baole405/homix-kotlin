@@ -1,0 +1,41 @@
+MAP AND CHAT GUIDE
+
+MAP STATUS
+- All map integrations (Goong/Mapbox) are currently cleared from the app.
+- `MapScreen.kt` is intentionally kept as a placeholder for future re-implementation.
+
+CHAT (FIREBASE) QUICK GUIDE
+
+1) Create Firebase project
+1. Go to Firebase Console.
+2. Create project.
+3. Add Android app with package: com.exe202.nova.
+4. Download google-services.json and place in app/.
+
+2) Enable Firestore
+1. Build -> Firestore Database.
+2. Create DB in dev mode first.
+3. Tighten rules before production.
+
+3) Data model suggestion
+- Collection: chats
+  - docId: residentId_staffId
+  - participants: [residentId, staffId]
+  - updatedAt
+- Subcollection: chats/{chatId}/messages
+  - senderId
+  - senderRole
+  - text
+  - createdAt
+  - read
+
+4) Security rules
+- Allow read/write only if request.auth.uid is inside participants.
+- Prevent writing senderId different from request.auth.uid.
+
+5) Production checklist
+- Offline persistence
+- Pagination
+- Retry/error UI
+- Read status
+- Logging/monitoring

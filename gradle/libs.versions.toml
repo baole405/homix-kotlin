@@ -22,6 +22,7 @@ splashscreen = "1.0.1"
 kotlinxSerializationJson = "1.7.3"
 datastore = "1.0.0"
 browser = "1.8.0"
+mapbox = "11.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -81,6 +82,9 @@ datastore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 
 # Browser (Chrome Custom Tabs)
 browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
+
+# Mapbox
+mapbox-maps = { group = "com.mapbox.maps", name = "android", version.ref = "mapbox" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

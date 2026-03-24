@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.exe202.nova.data.model.PaymentMethod
 import com.exe202.nova.ui.component.EmptyState
 import com.exe202.nova.ui.component.ErrorScreen
 import com.exe202.nova.ui.component.LoadingScreen
@@ -108,7 +107,7 @@ fun TransactionHistoryScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        tx.billTitle,
+                                        tx.billTitle ?: "Giao dịch",
                                         style = MaterialTheme.typography.titleMedium,
                                         modifier = Modifier.weight(1f)
                                     )
@@ -120,7 +119,7 @@ fun TransactionHistoryScreen(
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    tx.paidDate.toDisplayDateTime(),
+                                    (tx.paidDate ?: "-").toDisplayDateTime(),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -130,7 +129,7 @@ fun TransactionHistoryScreen(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    "Mã GD: ${tx.transactionCode}",
+                                    "Mã GD: ${tx.transactionCode ?: "-"}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                 )
@@ -143,9 +142,11 @@ fun TransactionHistoryScreen(
     }
 }
 
-private fun paymentMethodLabel(method: PaymentMethod): String = when (method) {
-    PaymentMethod.BANK_TRANSFER -> "Chuyển khoản ngân hàng"
-    PaymentMethod.CASH -> "Tiền mặt"
-    PaymentMethod.E_WALLET -> "Ví điện tử"
-    PaymentMethod.CREDIT_CARD -> "Thẻ tín dụng"
+private fun paymentMethodLabel(method: String?): String = when (method) {
+    "bank_transfer" -> "Chuyển khoản ngân hàng"
+    "cash" -> "Tiền mặt"
+    "e_wallet" -> "Ví điện tử"
+    "credit_card" -> "Thẻ tín dụng"
+    null -> "Không rõ"
+    else -> method
 }

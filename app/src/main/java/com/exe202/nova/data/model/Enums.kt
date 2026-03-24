@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 enum class AppRole {
     @SerializedName("manager") MANAGER,
-    @SerializedName("resident") RESIDENT
+    @SerializedName("resident") RESIDENT,
+    @SerializedName("staff") STAFF
 }
 
 enum class BillStatus {

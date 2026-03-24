@@ -1,3 +1,19 @@
+import org.gradle.authentication.http.BasicAuthentication
+import java.io.File
+import java.util.Properties
+
+val localProps = Properties().apply {
+    val file = File(rootDir, "local.properties")
+    if (file.exists()) {
+        file.inputStream().use { load(it) }
+    }
+}
+
+val mapboxDownloadsToken = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
+    ?: System.getenv("MAPBOX_DOWNLOADS_TOKEN")
+    ?: localProps.getProperty("MAPBOX_DOWNLOADS_TOKEN")
+    ?: ""
+
 pluginManagement {
     repositories {
         google {
@@ -11,11 +27,18 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.10.0"
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        // Mapbox Maven repository
+        maven {
+            url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
+        }
     }
 }
 

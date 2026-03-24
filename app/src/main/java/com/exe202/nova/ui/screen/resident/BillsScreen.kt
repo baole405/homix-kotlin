@@ -113,7 +113,7 @@ fun BillsScreen(
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    "Kỳ: ${bill.period}",
+                                    "Kỳ: ${bill.period ?: "-"}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )

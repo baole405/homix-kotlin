@@ -1,13 +1,22 @@
 package com.exe202.nova.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Apartment(
     val id: Int? = null,
     val unitNumber: String,
-    val floor: Int,
-    val block: String,
-    val area: Double,
+    val floor: Int? = null,
+    val block: String? = null,
+    @SerializedName("areaSqm") val areaSqm: String? = null,
+    val owner: ApartmentOwner? = null,
     val monthlyFee: Double? = null,
     val status: String? = null
+)
+
+data class ApartmentOwner(
+    val id: Int? = null,
+    val fullName: String? = null,
+    val email: String? = null
 )
 
 data class Vehicle(

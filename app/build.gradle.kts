@@ -11,6 +11,19 @@ if (envFile.exists()) {
     }
 }
 
+// Load local.properties for machine-local secrets
+val localPropertiesFile = rootProject.file("local.properties")
+val localVars = mutableMapOf<String, String>()
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.readLines().forEach { line ->
+        val trimmed = line.trim()
+        if (trimmed.isNotEmpty() && !trimmed.startsWith("#") && trimmed.contains("=")) {
+            val (key, value) = trimmed.split("=", limit = 2)
+            localVars[key.trim()] = value.trim()
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +31,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+
+    //google
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -34,10 +50,19 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Use local server via emulator loopback; .env URL is for production/web
-        val apiUrl = envVars["LOCAL_API_URL"] ?: "http://10.0.2.2:4000/api"
+        val apiUrl = envVars["LOCAL_API_URL"] ?: "https://homix-a9d3h.ondigitalocean.app/api"
         buildConfigField("String", "API_BASE_URL", "\"${apiUrl}/\"")
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${envVars["GOOGLE_CLIENT_ID"] ?: ""}\"")
         buildConfigField("String", "AUTH_BASE_URL", "\"${envVars["NEXT_PUBLIC_BETTER_AUTH_URL"] ?: "http://10.0.2.2:5000"}\"")
+        val mapboxPublicKey = envVars["MAPBOX_PUBLIC_KEY"]
+            ?: envVars["MAPBOX_ACCESS_TOKEN"]
+            ?: localVars["MAPBOX_PUBLIC_KEY"]
+            ?: localVars["MAPBOX_ACCESS_TOKEN"]
+            ***REMOVED***
+        val googleMapsUrl = envVars["MAP_DEFAULT_GOOGLE_MAPS_URL"]
+            ?: "https://maps.google.com/?q=10.762622,106.660172"
+        buildConfigField("String", "MAPBOX_PUBLIC_KEY", "\"${mapboxPublicKey}\"")
+        buildConfigField("String", "MAP_DEFAULT_GOOGLE_MAPS_URL", "\"${googleMapsUrl}\"")
     }
 
     buildTypes {
@@ -117,10 +142,16 @@ dependencies {
     // Browser (Chrome Custom Tabs)
     implementation(libs.browser)
 
+    implementation("com.mapbox.maps:android-ndk27:11.20.1")
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui.test.junit4)
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-firestore")
 }

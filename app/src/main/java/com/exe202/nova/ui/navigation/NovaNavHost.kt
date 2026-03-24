@@ -31,6 +31,11 @@ fun NovaNavHost() {
                     navController.navigate(ManagerMainRoute) {
                         popUpTo(SplashRoute) { inclusive = true }
                     }
+                },
+                onNavigateToStaff = {
+                    navController.navigate(ManagerMainRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
                 }
             )
         }
@@ -44,6 +49,11 @@ fun NovaNavHost() {
                     }
                 },
                 onNavigateToManager = {
+                    navController.navigate(ManagerMainRoute) {
+                        popUpTo(LoginRoute) { inclusive = true }
+                    }
+                },
+                onNavigateToStaff = {
                     navController.navigate(ManagerMainRoute) {
                         popUpTo(LoginRoute) { inclusive = true }
                     }

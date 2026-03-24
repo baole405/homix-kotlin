@@ -1,0 +1,102 @@
+Switching from a WebView to the Native Mapbox SDK (v11+) is a big step up in performance. Since you are using a 2026 version of Android Studio and Jetpack Compose, you should use the official Mapbox Compose Extension.
+
+Here is the exact way to set it up.
+
+1. Configure Your Credentials (The "SK" vs "PK" Fix)
+To download the SDK, you need a Secret Key (sk), but to run the map, you need a Public Key (pk).
+
+Secret Key: Go to your Mapbox Dashboard, create a token with DOWNLOADS:READ scope.
+
+gradle.properties: Open this file in your root folder and add:
+
+Properties
+MAPBOX_DOWNLOADS_TOKEN=sk.your_secret_key_here
+Public Key: Open app/src/main/res/values/strings.xml and add:
+
+XML
+<string name="mapbox_access_token">pk.your_public_key_here</string>
+2. Add Repositories and Dependencies
+Modern Android Studio (Panda 2) uses settings.gradle.kts for repositories.
+
+In settings.gradle.kts:
+
+Kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        // Add the Mapbox Maven repository
+        maven {
+            url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
+            credentials {
+                username = "mapbox"
+                password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").get()
+            }
+        }
+    }
+}
+In app/build.gradle.kts:
+
+Kotlin
+dependencies {
+    // Standard Maps SDK + Compose Extension
+    implementation("com.mapbox.maps:android:11.8.0")
+    implementation("com.mapbox.extension:maps-compose:11.8.0")
+}
+3. The Native Compose Code
+Replace your entire WebView logic with this clean, native implementation.
+
+Kotlin
+import com.mapbox.geojson.Point
+import com.mapbox.maps.extension.compose.MapboxMap
+import com.mapbox.maps.extension.compose.animation.viewport.rememberMapViewportState
+import com.mapbox.maps.extension.compose.annotation.generated.PointAnnotation
+
+@Composable
+fun MapScreen() {
+    val destination = Point.fromLngLat(106.70090, 10.77689)
+    
+    // Manage the camera state (Zoom, Center)
+    val mapViewportState = rememberMapViewportState {
+        setCameraOptions {
+            center(destination)
+            zoom(15.0)
+            pitch(45.0) // 3D angle
+        }
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Native Mapbox Composable
+        MapboxMap(
+            modifier = Modifier.fillMaxSize(),
+            mapViewportState = mapViewportState,
+        ) {
+            // Native Marker (Annotation)
+            PointAnnotation(
+                point = destination,
+                iconImage = "marker-15", // Uses default Mapbox icon
+                onClick = {
+                    // Handle click on the Nova building
+                    true
+                }
+            )
+        }
+    }
+}
+4. Why this is better than your WebView code:
+Gestures: Smooth 3D rotation and tilt with two fingers.
+
+Battery: Native rendering (OpenGL/Vulkan) is much lighter on the battery than a Chrome-based WebView.
+
+Caching: The SDK handles offline tile caching automatically.
+
+Permissions: Mapbox v11 has a LocationComponent that handles the "Blue Dot" for user location with zero JavaScript needed.
+
+Common Error: "403 Forbidden"
+If your Gradle Sync fails with a 403 error, it means:
+
+Your Secret Token (sk) doesn't have the DOWNLOADS:READ checkbox checked.
+
+You typed the password/username wrong in settings.gradle.kts. (Username must always be exactly "mapbox").
+
+Would you like me to show you how to add the "Route Line" (Directions) using the native SDK instead of the fetch call you had in JS?

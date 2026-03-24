@@ -40,6 +40,11 @@ import com.exe202.nova.ui.navigation.ManagerDashboardRoute
 import com.exe202.nova.ui.navigation.ManagerFacilitiesRoute
 import com.exe202.nova.ui.navigation.ManagerFeeTypesRoute
 import com.exe202.nova.ui.navigation.ManagerReportsRoute
+import com.exe202.nova.ui.navigation.ManagerChatRoute
+import com.exe202.nova.ui.navigation.ProfileRoute
+import com.exe202.nova.ui.navigation.SettingsRoute
+import com.exe202.nova.ui.screen.resident.ProfileScreen
+import com.exe202.nova.ui.screen.resident.SettingsScreen
 import com.exe202.nova.ui.theme.ManagerAccent
 import kotlinx.coroutines.launch
 
@@ -64,6 +69,9 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
         currentDestination?.hasRoute(ManagerCreateAnnouncementRoute::class) == true -> "Tạo Thông báo"
         currentDestination?.hasRoute(ManagerReportsRoute::class) == true -> "Báo cáo"
         currentDestination?.hasRoute(ManagerFeeTypesRoute::class) == true -> "Loại phí"
+        currentDestination?.hasRoute(ManagerChatRoute::class) == true -> "Chat"
+        currentDestination?.hasRoute(ProfileRoute::class) == true -> "Tài khoản"
+        currentDestination?.hasRoute(SettingsRoute::class) == true -> "Cài đặt"
         else -> "Nova"
     }
 
@@ -151,6 +159,21 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
                 }
                 composable<ManagerFeeTypesRoute> {
                     ManagerFeeTypesScreen()
+                }
+                composable<ManagerChatRoute> {
+                    ManagerChatScreen()
+                }
+                composable<ProfileRoute> {
+                    ProfileScreen(
+                        onNavigateToSettings = { nestedNavController.navigate(SettingsRoute) },
+                        onLogout = onLogout
+                    )
+                }
+                composable<SettingsRoute> {
+                    SettingsScreen(
+                        onNavigateBack = { nestedNavController.popBackStack() },
+                        onLogout = onLogout
+                    )
                 }
             }
         }
