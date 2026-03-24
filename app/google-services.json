@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "930908069860",
+    "project_id": "prm123-2b812",
+    "storage_bucket": "prm123-2b812.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930908069860:android:bb54202550c330a7a3b1f1",
+        "android_client_info": {
+          "package_name": "com.exe202.nova"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqPHdtBdKjWMKlRKUVDK-w6f_T1zuOjlQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

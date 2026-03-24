@@ -1,0 +1,122 @@
+BỐI CẢNH DỰ ÁN CĂN HỘ THÔNG MINH NOVA HOME
+1. Tổng quan về Hệ sinh thái Nova Home
+Nova Home không chỉ là một ứng dụng quản lý chung cư thông thường, mà là một Hệ sinh thái Căn hộ Thông minh Toàn diện (Comprehensive Smart Apartment Ecosystem). Dự án được phát triển với tầm nhìn thay đổi hoàn toàn cách cư dân tương tác với không gian sống và Ban quản lý (BQL), chuyển từ mô hình quản lý thủ công, rời rạc sang mô hình kỹ thuật số, tập trung và tự động hóa.
+
+Nova Home định vị mình là một "Quản gia số" (Digital Butler) tận tụy, luôn túc trực 24/7 để phục vụ mọi nhu cầu của cư dân, từ những việc nhỏ nhất như nhắc lịch đóng phí đến những việc phức tạp như điều phối sửa chữa 3D hoặc tư vấn mua bán căn hộ.
+
+2. Tầm nhìn và Sứ mệnh
+Tầm nhìn: Trở thành nền tảng tiêu chuẩn vàng cho các khu đô thị thông minh tại Việt Nam, nơi công nghệ AI và IoT được tích hợp không vết (seamless) để nâng cao chất lượng sống toàn diện.
+
+Sứ mệnh: Giải quyết triệt để các "điểm đau" (pain points) cố hữu trong việc vận hành chung cư, xây dựng sự minh bạch, tin cậy và tiện nghi tuyệt đối cho cư dân thông qua sức mạnh của dữ liệu và trí tuệ nhân tạo.
+
+3. Các Phân khúc Thông tin Chi tiết (Dữ liệu Nguồn cho Chatbot)
+Để chatbot AI (AI Nova) có thể trả lời chi tiết, dưới đây là các thông tin được thiết lập cấu trúc (đã bao gồm các thông tin "bịa" theo yêu cầu):
+
+A. Thông tin Tổng quan về Dự án (Bịa)
+Tên dự án: Nova Home Residence.
+
+Vị trí: 123 Đường Cư Dân Thông Minh, Phường Công Nghệ Cao, Quận 1, TP. Hồ Chí Minh.
+
+Quy mô: 3 Tòa tháp (Nova tòa A, Nova tòa B, Nova tòa C), mỗi tòa 45 tầng.
+
+Tổng số căn hộ: 2.500 căn.
+
+Loại hình: Căn hộ cao cấp (1-3 PN), Penthouse, Shophouse.
+
+B. Thông tin Giá cả và Giao dịch Căn hộ (Bịa)
+Chatbot cần được thiết lập để cung cấp thông tin mang tính chất tham khảo, tư vấn tổng quan:
+
+Giá bán tham khảo (Trung bình):
+
+Căn 1 PN (50m2): Từ 3.5 - 4 tỷ VNĐ.
+
+Căn 2 PN (75m2): Từ 5.5 - 6.5 tỷ VNĐ.
+
+Căn 3 PN (100m2): Từ 8 - 10 tỷ VNĐ.
+
+Lưu ý cho AI: Giá thay đổi tùy theo tầng, view (hướng sông, hướng nội khu) và tình trạng nội thất. Luôn nhắc cư dân liên hệ Phòng Kinh doanh để có giá chính xác nhất theo thời gian thực.
+
+Giá thuê tham khảo (Trung bình/tháng):
+
+Căn 1 PN (Nội thất cơ bản): 12 - 15 triệu VNĐ.
+
+Căn 2 PN (Full nội thất): 20 - 25 triệu VNĐ.
+
+Căn 3 PN (Full nội thất cao cấp): 30 - 35 triệu VNĐ.
+
+Quy trình Mua bán/Ký gửi (Do AI Nova hỗ trợ): Cư dân có thể trực tiếp ký gửi căn hộ hoặc đăng ký nhu cầu mua/thuê qua chatbox. AI Nova sẽ ghi nhận thông tin và chuyển sang bộ phận chuyên trách mà không cần cư dân phải điền form giấy.
+
+C. Dịch vụ Sửa chữa và Bảo trì Căn hộ (Bịa)
+Đây là khả năng nâng cao của hệ thống Nova Home so với thực tế:
+
+Dịch vụ Sửa chữa 3D (3D Repair Request): Khi có sự cố (ví dụ: rò rỉ nước), cư dân chỉ cần chụp ảnh hoặc quay video qua app. Hệ thống AI sẽ phân tích hình ảnh, dựng lại mô hình 3D của khu vực bị hỏng và tự động xác định nguyên nhân tiềm ẩn trước khi kỹ thuật viên đến.
+
+Các Gói Sửa chữa Định kỳ:
+
+Gói "Khởi đầu mới" (New Start): Tư vấn thiết kế và thi công nội thất full căn hộ cho cư dân mới nhận nhà.
+
+Gói "Bảo trì Toàn diện" (Total Care): Kiểm tra định kỳ hệ thống điện, nước, máy lạnh, và khóa từ 6 tháng/lần.
+
+Gói "Cấp cứu 24/7" (Emergency response): Xử lý các sự cố khẩn cấp (mất điện, kẹt khóa, ngập nước) trong vòng 15 phút sau khi nhận yêu cầu qua chatbot.
+
+Bảng giá Sửa chữa (Tham khảo): Chatbot AI có thể cung cấp bảng giá tham khảo cho các hạng mục phổ biến (ví dụ: thay vòi nước: 150k + tiền thiết bị; vệ sinh máy lạnh: 200k/máy) để đảm bảo tính minh bạch.
+
+D. Hệ thống Phí dịch vụ và Thanh toán (Core Problem của EXE202)
+Dữ liệu này phục vụ trực tiếp cho MVP của môn học:
+
+Các loại phí:
+
+Phí quản lý (Bắt buộc): 15.000 VNĐ/m2/tháng (ví dụ: căn 75m2 là 1.125.000 VNĐ).
+
+Phí gửi xe:
+
+Ô tô: 1.500.000 VNĐ/xe/tháng.
+
+Xe máy: 150.000 VNĐ/xe/tháng.
+
+Phí Điện & Nước: Theo giá nhà nước.
+
+Phí tiện ích nâng cao (Bịa): Gói Gym/Pool gia đình: 500.000 VNĐ/tháng.
+
+Hạn đóng phí: Trước ngày 05 hàng tháng.
+
+Phí phạt trễ hạn: 0.05%/ngày trên tổng số tiền chậm nộp.
+
+Hệ thống Thanh toán Tập trung (Nova Pay): Tích hợp tất cả các hình thức thanh toán (Visa/Master, Ví điện tử Momo/ZaloPay, Chuyển khoản VietQR) vào một cổng duy nhất trên app, tự động gạch nợ ngay lập tức.
+
+4. Khả năng và Tính năng của Hệ thống Nova Home (Phạm vi Mở rộng & Bịa)
+AI Nova phải "thể hiện" được các khả năng này khi tương tác với cư dân, dù có thể MVP chưa triển khai:
+
+Hỗ trợ đa ngôn ngữ: AI Nova có thể giao tiếp mượt mà bằng tiếng Việt, tiếng Anh, tiếng Hàn và tiếng Trung để phục vụ cộng đồng cư dân quốc tế tại Nova Home.
+
+Tích hợp IoT (Smart Home Link): Cư dân có thể điều khiển đèn, rèm, máy lạnh, loa thông minh trực tiếp từ giao diện chat của AI Nova (ví dụ: "AI Nova ơi, tắt đèn phòng khách giúp tôi").
+
+Hệ thống An ninh Nhận diện Khuôn mặt (FaceID Security): Tự động nhận diện cư dân khi vào sảnh và gọi thang máy đến đúng tầng. AI Nova có thể giúp cư dân đăng ký FaceID cho khách ghé thăm thông qua chatbox.
+
+Đánh giá Uy tín (Resident Reputation Score): Cư dân có điểm uy tín cao (đóng phí đúng hạn, không bị khiếu nại) sẽ được ưu tiên khi đặt lịch các tiện ích (BBQ, Tennis, Phòng họp) và nhận các mã giảm giá từ các đối tác thương mại của Nova Home.
+
+Cộng đồng Nova Connect: Phân hệ mạng xã hội nội bộ, nơi cư dân có thể rao vặt, tìm bạn đồng hành chạy bộ, hoặc lập các câu lạc bộ sở thích. AI Nova đóng vai trò điều phối và kiểm duyệt nội dung tự động.
+
+5. Các "Điểm Đau" Cốt lõi mà Nova Home Giải quyết (Chi tiết hơn)
+5.1 Xung đột về Quản lý Sửa chữa & Bảo trì
+Trước khi có Nova Home, cư dân gặp cực kỳ nhiều khó khăn khi muốn sửa chữa. Quy trình thủ công, không rõ ai chịu trách nhiệm, thời gian xử lý kéo dài và chi phí không minh bạch. Cư dân mất lòng tin vào BQL và thường phải thuê thợ ngoài với giá cao và rủi ro lớn.
+Giải pháp: Thư viện dịch vụ sửa chữa rõ ràng, hệ thống AI xác định lỗi 3D, và bảng giá minh bạch.
+
+5.2 Sự thiếu hiệu quả trong việc Xử lý Phản ánh/Khiếu nại
+Hiện tại, các khiếu nại (tiếng ồn, rác thải, thái độ nhân viên) thường được gửi qua các kênh không chính thức (Zalo group, gọi điện). Những khiếu nại này dễ bị trôi, bị Ban quản lý "lờ đi" hoặc giải quyết không triệt để mà không có phản hồi lại cho cư dân, gây ức chế kéo dài.
+Giải pháp: AI Nova ghi nhận khiếu nại dưới dạng Ticket, có mã số theo dõi và quy trình giải quyết được công khai, đảm bảo cư dân luôn được lắng nghe.
+
+5.3 Sự thiếu Minh bạch trong Thông báo và Vận hành
+Các thông báo quan trọng (lịch mất nước, bảo trì thang máy, thông tin tài chính của quỹ bảo trì) thường được giao đến muộn hoặc bị chôn vùi trong các tin nhắn chat group. Cư dân không nắm rõ tiền phí của mình được sử dụng như thế nào, tạo ra sự ngờ vực lớn giữa cư dân và Ban quản trị.
+Giải pháp: Kênh thông báo chính thức, tập trung. AI Nova chủ động nhắc nhở các lịch bảo trì ảnh hưởng đến từng căn hộ cụ thể.
+
+5.4 Sự bất tiện và rủi ro trong Thanh toán Phí dịch vụ (Core Problem của EXE202)
+Cư dân phải đóng quá nhiều loại phí. Do thiếu hệ thống nhắc hạn và quản lý tập trung, cư dân thường xuyên quên hạn đóng phí, dẫn đến việc bị phát sinh phí phạt hoặc bị cắt dịch vụ một cách không đáng có. Quy trình thanh toán hiện tại tốn thời gian, rắc rối và không minh bạch.
+Giải pháp (MVP): Nhắc hạn phí dịch vụ tự động, hiển thị rõ ràng danh sách phí cần đóng, cung cấp lịch sử thanh toán minh bạch và tích hợp cổng thanh toán một chạm.
+
+5.5 Sự rời rạc của các Nền tảng Quản lý
+Hiện tại không có một nền tảng duy nhất nào tích hợp tất cả các dịch vụ: Giao tiếp, Yêu cầu dịch vụ, Thông báo và Thanh toán. Các giải pháp đang dùng đều rời rạc, thủ công và phụ thuộc quá nhiều vào sự điều phối của con người thay vì các quy trình dựa trên dữ liệu.
+Giải pháp: Nền tảng Nova Home tích hợp, mang lại trải nghiệm sống mượt mà và nhất quán.
+
+6. Kết luận
+Nova Home Residence được thiết kế để trở thành hình mẫu của một cộng đồng đô thị thông minh kiểu mới. Bằng cách tập trung vào sự minh bạch, dữ liệu và AI, chúng tôi không chỉ giải quyết các vấn đề vận hành mà còn xây dựng một môi trường sống nơi cư dân thực sự cảm thấy được chăm sóc và trân trọng từng khoảnh khắc. Chatbot AI Nova là trái tim của hệ thống này, đảm bảo mỗi tương tác của cư dân luôn nhanh chóng, chính xác và đậm chất cá nhân hóa.

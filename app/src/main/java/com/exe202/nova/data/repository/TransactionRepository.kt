@@ -11,13 +11,13 @@ class TransactionRepository @Inject constructor(
 ) {
     suspend fun getTransactions(): Result<List<Transaction>> = runCatching {
         val response = api.getTransactions()
-        if (response.isSuccessful) response.body() ?: error("Empty response body")
+        if (response.isSuccessful) response.body()?.data ?: error("Empty response body")
         else error("Lỗi ${response.code()}: ${response.message()}")
     }
 
     suspend fun getTransactionsByMonth(month: String): Result<List<Transaction>> = runCatching {
         val response = api.getTransactionsByMonth(month)
-        if (response.isSuccessful) response.body() ?: error("Empty response body")
+        if (response.isSuccessful) response.body()?.data ?: error("Empty response body")
         else error("Lỗi ${response.code()}: ${response.message()}")
     }
 }

@@ -15,6 +15,7 @@ sealed class SplashDestination {
     data object Login : SplashDestination()
     data object Resident : SplashDestination()
     data object Manager : SplashDestination()
+    data object Staff : SplashDestination()
 }
 
 @HiltViewModel
@@ -41,6 +42,7 @@ class SplashViewModel @Inject constructor(
                 _destination.value = when (user.role) {
                     AppRole.MANAGER -> SplashDestination.Manager
                     AppRole.RESIDENT -> SplashDestination.Resident
+                    AppRole.STAFF -> SplashDestination.Staff
                 }
             } catch (e: Exception) {
                 authRepository.clearToken()

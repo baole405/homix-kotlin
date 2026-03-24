@@ -11,6 +11,19 @@ if (envFile.exists()) {
     }
 }
 
+// Load local.properties for machine-local secrets
+val localPropertiesFile = rootProject.file("local.properties")
+val localVars = mutableMapOf<String, String>()
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.readLines().forEach { line ->
+        val trimmed = line.trim()
+        if (trimmed.isNotEmpty() && !trimmed.startsWith("#") && trimmed.contains("=")) {
+            val (key, value) = trimmed.split("=", limit = 2)
+            localVars[key.trim()] = value.trim()
+        }
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +31,9 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+
+    //google
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -34,10 +50,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Use local server via emulator loopback; .env URL is for production/web
-        val apiUrl = envVars["LOCAL_API_URL"] ?: "http://10.0.2.2:4000/api"
+        val apiUrl = envVars["LOCAL_API_URL"] ?: "https://homix-a9d3h.ondigitalocean.app/api"
         buildConfigField("String", "API_BASE_URL", "\"${apiUrl}/\"")
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${envVars["GOOGLE_CLIENT_ID"] ?: ""}\"")
         buildConfigField("String", "AUTH_BASE_URL", "\"${envVars["NEXT_PUBLIC_BETTER_AUTH_URL"] ?: "http://10.0.2.2:5000"}\"")
+        val geminiApiKey = envVars["GEMINI_API_KEY"]
+            ?: localVars["GEMINI_API_KEY"]
+            ?: "AIzaSyBQqtvoe53CB4r82mf_kT5DP1OjzwQA6Ik"
+        buildConfigField("String", "GEMINI_API_KEY", "\"${geminiApiKey}\"")
     }
 
     buildTypes {
@@ -123,4 +143,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui.test.junit4)
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+    implementation("com.google.firebase:firebase-firestore")
 }

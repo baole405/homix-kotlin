@@ -10,19 +10,16 @@ data class Booking(
     val endTime: String,
     val status: BookingStatus,
     val notes: String?,
-    val numberOfParticipants: Int?,
-    val createdAt: String
+    val numberOfParticipants: Int? = null,
+    val createdAt: String? = null
 )
 
 data class CreateBookingRequest(
     val serviceType: String,
+    val slotNumber: String?,
     val date: String,
+    val endDate: String?,
     val startTime: String,
     val endTime: String,
-    val slotNumber: String?,
-    val slotNumbers: List<String>?,
-    val endDate: String?,
-    val notes: String?,
-    val price: Double?,
-    val numberOfParticipants: Int?
+    val notes: String?
 )

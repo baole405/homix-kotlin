@@ -5,9 +5,9 @@ data class Bill(
     val title: String,
     val amount: String,
     val dueDate: String,
-    val period: String,
+    val period: String? = null,
     val status: BillStatus,
-    val createdAt: String,
+    val createdAt: String? = null,
     val paidAt: String?
 )
 
@@ -16,9 +16,9 @@ data class BillDetail(
     val title: String,
     val amount: String,
     val dueDate: String,
-    val period: String,
+    val period: String? = null,
     val status: BillStatus,
-    val createdAt: String,
+    val createdAt: String? = null,
     val paidAt: String?,
     val apartment: ApartmentInfo?,
     val items: List<BillItem>
@@ -34,8 +34,12 @@ data class BillItem(
     val feeType: FeeTypeInfo?
 )
 
-data class FeeTypeInfo(val id: Int, val name: String)
-data class ApartmentInfo(val unitNumber: String, val floor: Int, val block: String)
+data class FeeTypeInfo(val id: Int?, val name: String?)
+data class ApartmentInfo(
+    val unitNumber: String?,
+    val floor: Int?,
+    val block: String?
+)
 
 data class BillsResponse(
     val data: List<Bill>,
@@ -58,5 +62,19 @@ data class CreatePaymentLinkRequest(
 data class CreatePaymentLinkResponse(val checkoutUrl: String)
 
 data class MarkPaidResponse(
-    val message: String
+    val message: String,
+    val bill: PaidBillInfo? = null,
+    val transaction: PaidTransactionInfo? = null
+)
+
+data class PaidBillInfo(
+    val id: Int,
+    val status: BillStatus,
+    val paidAt: String?
+)
+
+data class PaidTransactionInfo(
+    val id: Int,
+    val amount: String,
+    val method: String
 )

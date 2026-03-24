@@ -45,6 +45,7 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onNavigateToResident: () -> Unit,
     onNavigateToManager: () -> Unit,
+    onNavigateToStaff: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -54,6 +55,7 @@ fun LoginScreen(
         when (uiState.loginSuccess) {
             AppRole.RESIDENT -> onNavigateToResident()
             AppRole.MANAGER -> onNavigateToManager()
+            AppRole.STAFF -> onNavigateToStaff()
             null -> { /* not logged in yet */ }
         }
     }

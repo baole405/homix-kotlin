@@ -18,6 +18,7 @@ fun SplashScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToResident: () -> Unit,
     onNavigateToManager: () -> Unit,
+    onNavigateToStaff: () -> Unit,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
     val destination by viewModel.destination.collectAsStateWithLifecycle()
@@ -27,6 +28,7 @@ fun SplashScreen(
             SplashDestination.Login -> onNavigateToLogin()
             SplashDestination.Resident -> onNavigateToResident()
             SplashDestination.Manager -> onNavigateToManager()
+            SplashDestination.Staff -> onNavigateToStaff()
             SplashDestination.Loading -> { /* wait */ }
         }
     }

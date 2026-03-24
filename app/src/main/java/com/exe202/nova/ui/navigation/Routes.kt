@@ -45,6 +45,9 @@ object ProfileRoute
 @Serializable
 object SettingsRoute
 
+@Serializable
+object ResidentChatRoute
+
 // Manager nested routes
 @Serializable
 object ManagerDashboardRoute
@@ -79,9 +82,22 @@ object ManagerReportsRoute
 @Serializable
 object ManagerFeeTypesRoute
 
+@Serializable
+object ManagerChatRoute
+
+@Serializable
+data class ManagerChatThreadRoute(
+	val threadId: String,
+	val residentId: String,
+	val residentName: String
+)
+
 // Resident feature routes
 @Serializable
 object FacilitiesRoute
 
 @Serializable
 object MaintenanceRoute
+
+@Serializable
+object MapRoute

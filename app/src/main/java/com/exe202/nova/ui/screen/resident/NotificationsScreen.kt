@@ -125,7 +125,7 @@ fun NotificationsScreen(
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    notification.createdAt.toRelativeTime(),
+                                    (notification.createdAt ?: "").toRelativeTime(),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )

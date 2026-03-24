@@ -82,6 +82,7 @@ datastore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 # Browser (Chrome Custom Tabs)
 browser = { group = "androidx.browser", name = "browser", version.ref = "browser" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
