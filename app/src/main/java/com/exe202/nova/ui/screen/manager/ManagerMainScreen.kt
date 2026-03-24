@@ -34,6 +34,7 @@ import com.exe202.nova.ui.navigation.ManagerApartmentsRoute
 import com.exe202.nova.ui.navigation.ManagerBillingRoute
 import com.exe202.nova.ui.navigation.ManagerBookingsRoute
 import com.exe202.nova.ui.navigation.ManagerCreateAnnouncementRoute
+import com.exe202.nova.ui.navigation.ManagerChatThreadRoute
 import com.exe202.nova.ui.navigation.ManagerCustomerDetailRoute
 import com.exe202.nova.ui.navigation.ManagerCustomersRoute
 import com.exe202.nova.ui.navigation.ManagerDashboardRoute
@@ -70,6 +71,7 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
         currentDestination?.hasRoute(ManagerReportsRoute::class) == true -> "Báo cáo"
         currentDestination?.hasRoute(ManagerFeeTypesRoute::class) == true -> "Loại phí"
         currentDestination?.hasRoute(ManagerChatRoute::class) == true -> "Chat"
+        currentDestination?.hasRoute(ManagerChatThreadRoute::class) == true -> "Chat"
         currentDestination?.hasRoute(ProfileRoute::class) == true -> "Tài khoản"
         currentDestination?.hasRoute(SettingsRoute::class) == true -> "Cài đặt"
         else -> "Nova"
@@ -161,7 +163,25 @@ fun ManagerMainScreen(onLogout: () -> Unit) {
                     ManagerFeeTypesScreen()
                 }
                 composable<ManagerChatRoute> {
-                    ManagerChatScreen()
+                    ManagerChatScreen(
+                        onOpenThread = { threadId, residentId, residentName ->
+                            nestedNavController.navigate(
+                                ManagerChatThreadRoute(
+                                    threadId = threadId,
+                                    residentId = residentId,
+                                    residentName = residentName
+                                )
+                            )
+                        }
+                    )
+                }
+                composable<ManagerChatThreadRoute> { backStackEntry ->
+                    val route = backStackEntry.toRoute<ManagerChatThreadRoute>()
+                    ManagerChatThreadScreen(
+                        threadId = route.threadId,
+                        residentName = route.residentName,
+                        onNavigateBack = { nestedNavController.popBackStack() }
+                    )
                 }
                 composable<ProfileRoute> {
                     ProfileScreen(

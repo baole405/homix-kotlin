@@ -9,8 +9,10 @@ import com.exe202.nova.data.model.ParkingSlot
 import com.exe202.nova.data.model.PoolSlot
 import com.exe202.nova.data.model.SlotStatus
 import com.exe202.nova.data.model.VehicleType
+import com.exe202.nova.data.repository.AppNotificationRepository
 import com.exe202.nova.data.repository.BookingRepository
 import com.exe202.nova.data.repository.FacilityRepository
+import com.exe202.nova.util.SystemNotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -85,7 +87,9 @@ data class BookedSlotsState(
 @HiltViewModel
 class BookingViewModel @Inject constructor(
     private val facilityRepository: FacilityRepository,
-    private val bookingRepository: BookingRepository
+    private val bookingRepository: BookingRepository,
+    private val appNotificationRepository: AppNotificationRepository,
+    private val systemNotificationHelper: SystemNotificationHelper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BookingUiState())
@@ -222,6 +226,11 @@ class BookingViewModel @Inject constructor(
                         notes = state.notes.ifBlank { null }
                     )
                 )
+                notifyBookingSuccess(
+                    key = "booking_success_pool_${state.selectedDate}_${slot.startTime}",
+                    title = "Dat cho thanh cong",
+                    content = "Ban da dat be boi thanh cong. Hay mo app de xem chi tiet."
+                )
                 _uiState.update {
                     it.copy(
                         pool = it.pool.copy(isSubmitting = false, submitSuccess = true),
@@ -261,6 +270,11 @@ class BookingViewModel @Inject constructor(
                         endTime = state.endTime,
                         notes = state.notes.ifBlank { null }
                     )
+                )
+                notifyBookingSuccess(
+                    key = "booking_success_bbq_${state.selectedDate}_${slotId}_${state.startTime}",
+                    title = "Dat cho thanh cong",
+                    content = "Ban da dat khu BBQ thanh cong. Hay mo app de xem chi tiet."
                 )
                 _uiState.update {
                     it.copy(
@@ -320,6 +334,11 @@ class BookingViewModel @Inject constructor(
                         )
                     )
                 }
+                notifyBookingSuccess(
+                    key = "booking_success_parking_${state.selectedDate}_${state.selectedSlotIds.joinToString("-")}",
+                    title = "Dat cho thanh cong",
+                    content = "Ban da dat cho bai xe thanh cong. Hay mo app de xem chi tiet."
+                )
                 _uiState.update {
                     it.copy(
                         parking = it.parking.copy(
@@ -404,5 +423,19 @@ class BookingViewModel @Inject constructor(
                 // Ignore prefetch errors; form submit will still show backend errors.
             }
         }
+    }
+
+    private fun notifyBookingSuccess(key: String, title: String, content: String) {
+        appNotificationRepository.upsert(
+            key = key,
+            title = title,
+            content = content,
+            type = "booking"
+        )
+        systemNotificationHelper.show(
+            key = key,
+            title = title,
+            content = content
+        )
     }
 }

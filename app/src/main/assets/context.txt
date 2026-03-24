@@ -1,0 +1,82 @@
+1. Tiêu chí lựa chọn Core Problem
+Nhóm thống nhất lựa chọn một Core Problem duy nhất dựa trên các tiêu chí sau:
+Vấn đề phải xuất hiện thường xuyên trong đời sống của người dùng (hàng ngày hoặc hàng tháng), không phải tình huống hiếm gặp.
+Vấn đề phải gây ảnh hưởng trực tiếp đến hành vi, cảm xúc hoặc tài chính của người dùng, khiến họ thực sự cảm thấy bất tiện hoặc khó chịu.
+Vấn đề phải có khả năng được kiểm chứng và xác thực thông qua phỏng vấn, khảo sát và thử nghiệm trong thời gian diễn ra môn học EXE202.
+Vấn đề có thể được giải quyết bằng một sản phẩm MVP đơn giản, không phụ thuộc vào phần cứng, IoT hoặc các tích hợp kỹ thuật phức tạp.
+Kết quả của việc giải quyết vấn đề phải có thể đo lường được thông qua phản hồi và hành vi thực tế của người dùng.
+
+2. Core Problem được lựa chọn
+Dựa trên các tiêu chí đã nêu, nhóm quyết định lựa chọn Core Problem như sau:
+Cư dân chung cư gặp khó khăn trong việc theo dõi và thanh toán các khoản phí dịch vụ định kỳ do thiếu hệ thống nhắc hạn và quản lý tập trung, dẫn đến việc quên hạn đóng phí, phát sinh phí phạt và mất thời gian xử lý lại với ban quản lý.
+
+3. Lý do lựa chọn Core Problem
+Vấn đề “theo dõi và thanh toán phí dịch vụ định kỳ” được lựa chọn làm Core Problem vì các lý do sau:
+Vấn đề này xuất hiện lặp lại hàng tháng, có tần suất rõ ràng và ổn định.
+Nó gây ảnh hưởng trực tiếp đến tài chính và trải nghiệm sống của cư dân thông qua các khoản phí phạt và sự bất tiện không cần thiết.
+Người dùng dễ nhận thức và mô tả vấn đề này trong các buổi phỏng vấn và khảo sát.
+Vấn đề có thể được giải quyết bằng một MVP gọn nhẹ, phù hợp với thời gian và nguồn lực của EXE202.
+Hiệu quả của giải pháp có thể được đo lường thông qua phản hồi, mức độ hài lòng và hành vi sử dụng của người dùng.
+
+4. Đối tượng người dùng chính
+Đối tượng người dùng chính mà nhóm tập trung trong EXE202 bao gồm:
+Cư dân đang sinh sống tại các khu chung cư, là người trực tiếp thực hiện việc đóng các khoản phí dịch vụ định kỳ.
+Nhóm người dùng này nằm trong độ tuổi từ 25 đến 45, có sử dụng smartphone và quen thuộc với các hình thức thanh toán điện tử.
+Họ mong muốn việc thanh toán trở nên đơn giản, đúng hạn và minh bạch, tránh phát sinh phí phạt không cần thiết.
+
+5. Phạm vi vấn đề trong EXE202
+Trong phạm vi của môn EXE202, nhóm tập trung giải quyết các khía cạnh sau của Core Problem:
+Nhắc hạn đóng phí dịch vụ định kỳ.
+Hiển thị rõ ràng danh sách các khoản phí cần thanh toán.
+Cung cấp lịch sử thanh toán để người dùng dễ dàng theo dõi.
+Các vấn đề và tính năng khác như quản lý sửa chữa, phản ánh khiếu nại, IoT, AI hoặc quản lý tiện ích nâng cao được ghi nhận nhưng không triển khai trong EXE202.
+
+6. Định nghĩa tiêu chí thành công
+Việc giải quyết Core Problem được xem là thành công khi:
+Người dùng hiểu rõ các khoản phí cần thanh toán và thời hạn tương ứng.
+Người dùng không còn quên hạn đóng phí hoặc giảm đáng kể tình trạng trễ hạn.
+Người dùng đánh giá giải pháp là hữu ích và sẵn sàng tiếp tục sử dụng trong tương lai.
+Thành công được đo lường thông qua phản hồi thực tế từ người dùng và dữ liệu hành vi, không chỉ dựa trên việc hoàn thành chức năng kỹ thuật.
+
+7. Kết luận
+Việc lựa chọn và tập trung vào một Core Problem duy nhất giúp nhóm:
+Tối ưu hoá nguồn lực và thời gian trong EXE202.
+Xây dựng một MVP có chiều sâu và dễ kiểm chứng giá trị.
+Đảm bảo mọi quyết định về thiết kế và kỹ thuật đều phục vụ trực tiếp cho mục tiêu chung của dự án.
+Mọi hoạt động phát triển tiếp theo đều phải bám sát Core Problem đã được xác định trong tài liệu này.
+
+1. Project Context
+In modern apartment buildings in Vietnam, residents interact daily with building management through various operational activities such as paying service fees, receiving announcements, reporting issues, and requesting maintenance services.
+However, most residential communities still rely heavily on manual or fragmented communication methods such as phone calls, paper forms, or social media group chats (e.g. Zalo, Facebook). These methods are unstructured, difficult to track, and lack transparency, leading to inefficiencies and frustration for both residents and management.
+
+2. Core Problems
+2.1 Maintenance and Repair Management
+Residents often experience difficulty when requesting repair or maintenance services. It is unclear who is responsible, how long the process will take, and how much it will cost. There is usually no system to track the progress of a request, causing delays or requests being ignored.
+As a result, residents lose trust in the building management and may choose to hire external technicians at higher and inconsistent costs.
+
+2.2 Feedback and Complaint Handling
+Currently, feedback and complaints are mainly handled through informal channels such as messaging apps or phone calls. These channels do not provide any official tracking or accountability.
+Complaints can be lost, delayed, or resolved without proper feedback to the resident, making residents feel unheard and dissatisfied.
+
+2.3 Announcements and Operational Transparency
+Important announcements from building management, such as maintenance schedules or operational updates, are often delivered late or buried in chat messages.
+In addition, financial information related to management fees and maintenance funds is not presented clearly, making residents unsure how their payments are being used.
+This lack of transparency creates distrust between residents and the management board.
+
+2.4 Service Fee Payment Inconvenience
+Residents are required to pay multiple types of service fees, including management fees, parking fees, electricity, water, and internet services.
+Due to the lack of reminders and centralized payment tracking, residents frequently forget payment deadlines, resulting in late fees or penalties. The payment process is time-consuming and inconvenient.
+
+2.5 Lack of an Integrated Management Platform
+There is currently no single platform that integrates communication, service requests, announcements, and payments for residential communities.
+Existing solutions are fragmented, manual, and heavily dependent on human coordination rather than data-driven processes. This leads to inefficient building operations and a poor living experience for residents.
+
+3. Problem Frequency and Severity
+These problems occur on a daily or weekly basis and directly affect residents’ time, finances, and overall living experience.
+At present, the problems can be classified as “vitamin problems” that reduce comfort and convenience. However, as urban living becomes more complex and residents’ expectations increase, these issues are gradually becoming “painkiller problems” that require urgent and systematic solutions.
+
+4. Summary Problem Statement
+Residents in apartment buildings are forced to interact with a fragmented, non-transparent, and manual management system, which causes unnecessary inconvenience, financial loss, and a lack of trust between residents and building management.
+
+
+

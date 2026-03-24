@@ -61,8 +61,12 @@ android {
             ***REMOVED***
         val googleMapsUrl = envVars["MAP_DEFAULT_GOOGLE_MAPS_URL"]
             ?: "https://maps.google.com/?q=10.762622,106.660172"
+        val geminiApiKey = envVars["GEMINI_API_KEY"]
+            ?: localVars["GEMINI_API_KEY"]
+            ?: "AIzaSyBQqtvoe53CB4r82mf_kT5DP1OjzwQA6Ik"
         buildConfigField("String", "MAPBOX_PUBLIC_KEY", "\"${mapboxPublicKey}\"")
         buildConfigField("String", "MAP_DEFAULT_GOOGLE_MAPS_URL", "\"${googleMapsUrl}\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"${geminiApiKey}\"")
     }
 
     buildTypes {
@@ -152,6 +156,5 @@ dependencies {
 
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
-    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
 }

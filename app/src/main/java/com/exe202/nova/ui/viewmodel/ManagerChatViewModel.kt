@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.exe202.nova.data.model.ChatMessage
 import com.exe202.nova.data.model.ChatThread
+import com.exe202.nova.data.repository.AppNotificationRepository
 import com.exe202.nova.data.repository.AuthRepository
 import com.exe202.nova.data.repository.ChatRepository
+import com.exe202.nova.util.SystemNotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,13 +30,17 @@ data class ManagerChatUiState(
 @HiltViewModel
 class ManagerChatViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val chatRepository: ChatRepository
+    private val chatRepository: ChatRepository,
+    private val appNotificationRepository: AppNotificationRepository,
+    private val systemNotificationHelper: SystemNotificationHelper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ManagerChatUiState())
     val uiState: StateFlow<ManagerChatUiState> = _uiState
 
     private var messagesJob: Job? = null
+    private var hasPrimedMessages = false
+    private val seenMessageIds = mutableSetOf<String>()
 
     init {
         loadManagerProfile()
@@ -121,8 +127,34 @@ class ManagerChatViewModel @Inject constructor(
 
     private fun observeMessages(threadId: String) {
         messagesJob?.cancel()
+        hasPrimedMessages = false
+        seenMessageIds.clear()
         messagesJob = viewModelScope.launch {
             chatRepository.observeMessages(threadId).collect { messages ->
+                val myId = _uiState.value.managerId
+                val incoming = messages.filter { message ->
+                    message.id !in seenMessageIds && message.senderId != myId
+                }
+
+                if (hasPrimedMessages && incoming.isNotEmpty()) {
+                    val latest = incoming.last()
+                    val key = "chat_incoming_manager_${threadId}_${latest.id}"
+                    val content = "${latest.senderName.ifBlank { "Resident" }}: ${latest.text}"
+                    appNotificationRepository.upsert(
+                        key = key,
+                        title = "Tin nhan moi",
+                        content = content,
+                        type = "chat"
+                    )
+                    systemNotificationHelper.show(
+                        key = key,
+                        title = "Tin nhan moi",
+                        content = content
+                    )
+                }
+
+                seenMessageIds.addAll(messages.map { it.id })
+                hasPrimedMessages = true
                 _uiState.update { it.copy(messages = messages) }
             }
         }
